@@ -1,0 +1,33 @@
+:root{
+
+    /* Cores */
+
+    --primary:#F4B400;
+
+    --primary-dark:#D99A00;
+
+    --background:#F2F2F2;
+
+    --surface:#FFFFFF;
+
+    --text:#1F1F1F;
+
+    --text-secondary:#707070;
+
+    --success:#2E7D32;
+
+    --danger:#C62828;
+
+    /* Fonte */
+
+    --font:'Manrope',sans-serif;
+
+    /* Bordas */
+
+    --radius:8px;
+
+    /* Sombra */
+
+    --shadow:0 6px 18px rgba(0,0,0,.08);
+
+}
