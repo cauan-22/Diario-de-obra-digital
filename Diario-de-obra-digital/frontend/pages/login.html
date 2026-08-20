@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <div class="top-bar"></div>
+
+        <!-- Marca d'água -->
+        <img
+            src="../assets/images/logo1.png"
+            alt=""
+            class="login-watermark"
+        >
+
+        <div class="login-container">
+
+            <section class="login-card">
+
+                <!-- Logo -->
+                <img
+                    src="../assets/images/logo1.png"
+                    alt="BuildTrack"
+                    class="login-logo"
+                >
+
+                <h1 class="login-title">
+                    BUILDTRACK
+                </h1>
+
+                <p class="login-subtitle">
+                    Sistema de Gestão de Obras
+                </p>
+
+                <div class="login-divider">
+                    <span></span>
+                </div>
+
+                <p class="login-description">
+                    Controle que gera confiança.
+                </p>
+
+                <div class="login-divider">
+                    <span></span>
+                </div>
+
+                <form class="login-form">
+
+                    <!-- E-mail -->
+                    <div class="input-group">
+
+                        <label
+                            for="email"
+                            class="input-label"
+                        >
+                            E-mail
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="material-symbols-outlined input-icon">
+                                mail
+                            </span>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="exemplo@empresa.com"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- Senha -->
+                    <div class="input-group">
+
+                        <label
+                            for="password"
+                            class="input-label"
+                        >
+                            Senha
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="material-symbols-outlined input-icon">
+                                lock
+                            </span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Digite sua senha"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="password-toggle"
+                                aria-label="Mostrar senha"
+                            >
+
+                                <span class="material-symbols-outlined">
+                                    visibility
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Botão -->
+                    <button
+                        type="submit"
+                        class="btn"
+                    >
+                        ENTRAR
+                    </button>
+
+                </form>
+
+                <div class="login-links">
+
+                    <a
+                        href="cadastro.html"
+                        class="register-link"
+                    >
+                        Não possui uma conta?
+                        <span>Criar conta</span>
+                    </a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <script src="../assets/js/login.js"></script>
+
+</body>
+
+</html>

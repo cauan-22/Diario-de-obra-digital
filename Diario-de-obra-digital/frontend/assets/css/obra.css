@@ -1,0 +1,657 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: obra.css
+   Descrição: Estilos da página de Detalhes da Obra
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA (mesmo padrão do login e da home)
+========================================================== */
+
+.obra-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+.obra-watermark {
+
+    position: fixed;
+
+    right: -70px;
+    bottom: -70px;
+
+    width: 320px;
+
+    opacity: 0.035;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.obra-page {
+
+    position: relative;
+
+    z-index: 1;
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    padding: 24px 20px 60px;
+
+}
+
+/* ==========================================================
+   CABEÇALHO
+========================================================== */
+
+.obra-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+.obra-back-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    padding: 6px 0;
+
+    border: none;
+
+    background: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+    cursor: pointer;
+
+}
+
+.obra-back-btn .material-symbols-outlined {
+
+    font-size: 18px;
+
+}
+
+.obra-menu-btn {
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    background: none;
+
+    color: var(--text);
+
+}
+
+/* ==========================================================
+   IDENTIFICAÇÃO DA OBRA
+========================================================== */
+
+.obra-identification {
+
+    margin-top: 22px;
+
+}
+
+.obra-number {
+
+    display: block;
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    line-height: 1;
+
+    color: var(--border);
+
+}
+
+.obra-name {
+
+    margin-top: 6px;
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.obra-meta {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-top: 12px;
+
+}
+
+.obra-location {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    font-size: 13px;
+
+    color: var(--text-secondary);
+
+}
+
+.obra-location .material-symbols-outlined {
+
+    font-size: 16px;
+
+}
+
+.obra-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+/* ==========================================================
+   INFORMAÇÕES DA OBRA
+========================================================== */
+
+.obra-info {
+
+    margin-top: 28px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+.obra-info-row {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.obra-info-row:last-child {
+
+    border-bottom: none;
+
+}
+
+.obra-info-row small {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+}
+
+.obra-info-value {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 3px;
+
+    text-align: right;
+
+}
+
+.obra-info-value strong {
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: var(--text);
+
+}
+
+.obra-info-sub {
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+/* ==========================================================
+   RESUMO RÁPIDO (compacto, apenas 2 itens)
+========================================================== */
+
+.obra-quick-summary {
+
+    display: flex;
+
+    gap: 32px;
+
+    margin-top: 22px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+.quick-summary-item {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+.quick-summary-label {
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+}
+
+.quick-summary-value {
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    color: var(--text);
+
+}
+
+#quick-rdos {
+
+    color: var(--primary-dark);
+
+}
+
+/* ==========================================================
+   DIÁRIO DE OBRA
+========================================================== */
+
+.obra-diary {
+
+    margin-top: 28px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+.obra-diary-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+}
+
+.obra-diary-header h2 {
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.obra-diary-header p {
+
+    margin-top: 4px;
+
+    font-size: 13px;
+
+    color: var(--text-secondary);
+
+}
+
+/* Botão "+ Novo RDO" — mesmo padrão do "+ Nova obra" da Home:
+   selo sólido, cantos retos */
+
+.new-rdo-btn {
+
+    padding: 9px 14px;
+
+    border: none;
+
+    background: var(--primary);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: background .2s ease, transform .2s ease;
+
+}
+
+.new-rdo-btn:hover {
+
+    background: var(--primary-dark);
+
+    transform: translateY(-2px);
+
+}
+
+.new-rdo-btn:active {
+
+    transform: scale(.96);
+
+}
+
+/* ==========================================================
+   LISTA DE RDOs — "REGISTROS TÉCNICOS"
+========================================================== */
+
+.rdo-list {
+
+    margin-top: 14px;
+
+}
+
+.rdo-row {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 18px 0;
+
+    border-bottom: 1px solid var(--border);
+
+    cursor: pointer;
+
+    transition: transform .2s ease;
+
+}
+
+.rdo-row:last-child {
+
+    border-bottom: none;
+
+}
+
+/* Barra amarela que desliza no hover, mesmo padrão da Home */
+
+.rdo-row::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: -20px;
+
+    top: 0;
+
+    bottom: 0;
+
+    width: 0;
+
+    background: var(--primary);
+
+    transition: width .2s ease;
+
+}
+
+.rdo-row:hover {
+
+    transform: translateX(6px);
+
+}
+
+.rdo-row:hover::before {
+
+    width: 4px;
+
+}
+
+.rdo-row-main {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+.rdo-row-date {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+}
+
+.rdo-row-title {
+
+    margin-top: 4px;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.rdo-row-stats {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 8px;
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+/* Ocorrência vira destaque funcional em amarelo */
+
+.rdo-row-stats .has-occurrence {
+
+    font-weight: 700;
+
+    color: var(--primary-dark);
+
+}
+
+.rdo-row-open {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+    white-space: nowrap;
+
+    transition: gap .2s ease;
+
+}
+
+.rdo-row-open .material-symbols-outlined {
+
+    font-size: 16px;
+
+    transition: transform .2s ease;
+
+}
+
+.rdo-row:hover .rdo-row-open {
+
+    gap: 8px;
+
+}
+
+.rdo-row:hover .rdo-row-open .material-symbols-outlined {
+
+    transform: translateX(3px);
+
+}
+
+/* ==========================================================
+   RESPONSIVIDADE (DESKTOP)
+========================================================== */
+
+@media (min-width: 768px) {
+
+    .obra-page {
+
+        max-width: 640px;
+
+        padding-top: 40px;
+
+    }
+
+    .obra-name {
+
+        font-size: 32px;
+
+    }
+
+    .rdo-row:hover {
+
+        transform: translateX(10px);
+
+    }
+
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Detalhes da Obra | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="obra-body">
+
+    <div class="top-bar"></div>
+
+    <!-- Marca d'água -->
+    <img
+        src="../assets/images/logo1.png"
+        alt=""
+        class="obra-watermark"
+    >
+
+    <main class="obra-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="obra-header">
+
+            <button
+                class="obra-back-btn"
+                id="obra-back-btn"
+                type="button"
+            >
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+            <button
+                class="obra-menu-btn"
+                aria-label="Opções da obra"
+                type="button"
+            >
+                <span class="material-symbols-outlined">more_vert</span>
+            </button>
+
+        </header>
+
+        <!-- ============================
+             IDENTIFICAÇÃO DA OBRA
+        ============================= -->
+
+        <section class="obra-identification">
+
+            <span class="obra-number" id="obra-number">01</span>
+
+            <h1 class="obra-name" id="obra-name">Casa Jardim</h1>
+
+            <div class="obra-meta">
+
+                <span class="obra-location">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span id="obra-location">Porto Belo / SC</span>
+                </span>
+
+                <span class="obra-status status-ativa" id="obra-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text" id="obra-status-text">Ativa</span>
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- ============================
+             INFORMAÇÕES DA OBRA
+        ============================= -->
+
+        <section class="obra-info" aria-label="Informações da obra">
+
+            <div class="obra-info-row">
+                <small>Cliente</small>
+                <div class="obra-info-value">
+                    <strong id="info-client">João Silva</strong>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>Contrato</small>
+                <div class="obra-info-value">
+                    <strong id="info-contract">CT-2026-014</strong>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>Responsável técnico</small>
+                <div class="obra-info-value">
+                    <strong id="info-responsible">Eng. Carlos Mendes</strong>
+                    <span class="obra-info-sub" id="info-crea">CREA/SC 123456</span>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>Início da obra</small>
+                <div class="obra-info-value">
+                    <strong id="info-start">05/08/2026</strong>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ============================
+             RESUMO RÁPIDO
+        ============================= -->
+
+        <section class="obra-quick-summary" aria-label="Resumo rápido">
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">RDOs</span>
+                <strong class="quick-summary-value" id="quick-rdos">12</strong>
+            </div>
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">Último registro</span>
+                <strong class="quick-summary-value" id="quick-last">20 AGO 2026</strong>
+            </div>
+
+        </section>
+
+        <!-- ============================
+             DIÁRIO DE OBRA
+        ============================= -->
+
+        <section class="obra-diary">
+
+            <div class="obra-diary-header">
+
+                <div>
+                    <h2>Diário de obra</h2>
+                    <p>Registros realizados nesta obra.</p>
+                </div>
+
+                <button
+                    class="new-rdo-btn"
+                    id="new-rdo-btn"
+                    type="button"
+                >
+                    + Novo RDO
+                </button>
+
+            </div>
+
+            <div
+                class="rdo-list"
+                id="rdo-list"
+            >
+                <!-- Registros gerados via obra.js -->
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/obra.js"></script>
+
+</body>
+
+</html>

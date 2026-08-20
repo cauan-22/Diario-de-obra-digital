@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Home | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="home-body">
+
+    <div class="top-bar"></div>
+
+    <!-- Marca d'água -->
+    <img
+        src="../assets/images/logo1.png"
+        alt=""
+        class="home-watermark"
+    >
+
+    <main class="home-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="home-header">
+
+            <div class="home-header-top">
+
+                <div class="home-logo">
+                    <span class="home-logo-mark"></span>
+                    BUILDTRACK
+                </div>
+
+                <button
+                    class="home-menu-btn"
+                    aria-label="Abrir menu"
+                >
+                    <span class="material-symbols-outlined">
+                        menu
+                    </span>
+                </button>
+
+            </div>
+
+            <div class="home-greeting">
+
+                <h1>Bom dia, <span class="home-greeting-name">Cauan</span></h1>
+
+                <p>Veja o que está acontecendo nas suas obras.</p>
+
+            </div>
+
+        </header>
+
+        <!-- ============================
+             RESUMO
+        ============================= -->
+
+        <section class="home-summary" aria-label="Resumo das obras">
+
+            <div class="summary-item">
+                <span class="summary-number" id="summary-total">03</span>
+                <span class="summary-label">Obras</span>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-item summary-item--accent">
+                <span class="summary-number" id="summary-active">02</span>
+                <span class="summary-label">Ativas</span>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-item">
+                <span class="summary-number" id="summary-rdos">12</span>
+                <span class="summary-label">RDOs</span>
+            </div>
+
+        </section>
+
+        <!-- ============================
+             MINHAS OBRAS
+        ============================= -->
+
+        <section class="home-projects">
+
+            <div class="home-projects-header">
+
+                <h2>Minhas obras</h2>
+
+                <button
+                    class="new-project-btn"
+                    id="new-project-btn"
+                    type="button"
+                >
+                    + Nova obra
+                </button>
+
+            </div>
+
+            <div
+                class="project-list"
+                id="project-list"
+            >
+                <!-- Registros gerados via home.js -->
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ============================
+         BOTTOM NAVIGATION
+    ============================= -->
+
+    <nav class="bottom-nav">
+
+        <a href="home.html" class="active">
+            <span class="material-symbols-outlined">home</span>
+            Início
+        </a>
+
+        <a href="#">
+            <span class="material-symbols-outlined">construction</span>
+            Obras
+        </a>
+
+        <a href="#">
+            <span class="material-symbols-outlined">description</span>
+            RDOs
+        </a>
+
+        <a href="#">
+            <span class="material-symbols-outlined">person</span>
+            Perfil
+        </a>
+
+    </nav>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/home.js"></script>
+
+</body>
+
+</html>

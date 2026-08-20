@@ -1,0 +1,595 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: home.css
+   Descrição: Estilos da página Home
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA (mesmo grid de pontos do login)
+========================================================== */
+
+.home-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+/* Marca d'água */
+
+.home-watermark {
+
+    position: fixed;
+
+    right: -70px;
+    bottom: -70px;
+
+    width: 320px;
+
+    opacity: 0.035;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.home-page {
+
+    position: relative;
+
+    z-index: 1;
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    padding: 28px 20px 110px;
+
+}
+
+/* ==========================================================
+   CABEÇALHO
+========================================================== */
+
+.home-header-top {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+.home-logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 17px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    color: var(--text);
+
+}
+
+.home-logo-mark {
+
+    width: 9px;
+    height: 9px;
+
+    background: var(--primary);
+
+}
+
+.home-menu-btn {
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    background: none;
+
+    color: var(--text);
+
+}
+
+.home-greeting {
+
+    margin-top: 30px;
+
+}
+
+.home-greeting h1 {
+
+    font-size: 26px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+
+    text-transform: uppercase;
+
+}
+
+.home-greeting p {
+
+    margin-top: 6px;
+
+    font-size: 14px;
+
+    color: var(--text-secondary);
+
+}
+
+.home-greeting-name {
+
+    color: var(--primary-dark);
+
+}
+
+/* ==========================================================
+   RESUMO (TIPOGRÁFICO, NÃO CARDS)
+========================================================== */
+
+.home-summary {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-top: 34px;
+
+    padding: 20px 0;
+
+    border-top: 1px solid var(--border);
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.summary-item {
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+.summary-number {
+
+    font-size: 38px;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+
+    line-height: 1;
+
+    color: var(--text);
+
+}
+
+.summary-label {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+}
+
+.summary-divider {
+
+    width: 1px;
+
+    height: 40px;
+
+    background: var(--border);
+
+    margin: 0 16px;
+
+}
+
+/* Item em destaque (obras ativas) */
+
+.summary-item--accent .summary-number {
+
+    color: var(--primary-dark);
+
+}
+
+.summary-item--accent .summary-label::before {
+
+    content: "";
+
+    display: inline-block;
+
+    width: 5px;
+    height: 5px;
+
+    margin-right: 5px;
+
+    background: var(--primary);
+
+}
+
+/* ==========================================================
+   SEÇÃO "MINHAS OBRAS"
+========================================================== */
+
+.home-projects {
+
+    margin-top: 38px;
+
+}
+
+.home-projects-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+.home-projects-header h2 {
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+/* Botão "+ Nova obra" — selo sólido, cantos retos (propósito: contrastar
+   com o botão arredondado do login e reforçar a estética industrial) */
+
+.new-project-btn {
+
+    padding: 9px 14px;
+
+    border: none;
+
+    background: var(--primary);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+    cursor: pointer;
+
+    transition: background .2s ease, transform .2s ease;
+
+}
+
+.new-project-btn:hover {
+
+    background: var(--primary-dark);
+
+    transform: translateY(-2px);
+
+}
+
+.new-project-btn:active {
+
+    transform: scale(.96);
+
+}
+
+/* ==========================================================
+   LISTA DE OBRAS — "REGISTROS TÉCNICOS"
+========================================================== */
+
+.project-list {
+
+    margin-top: 12px;
+
+}
+
+.project-row {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 20px 0;
+
+    border-bottom: 1px solid var(--border);
+
+    cursor: pointer;
+
+    transition: transform .2s ease;
+
+}
+
+.project-row:last-child {
+
+    border-bottom: none;
+
+}
+
+/* Barra amarela que desliza da borda esquerda no hover,
+   usando o espaço da margem lateral da página */
+
+.project-row::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: -20px;
+
+    top: 0;
+
+    bottom: 0;
+
+    width: 0;
+
+    background: var(--primary);
+
+    transition: width .2s ease;
+
+}
+
+.project-row:hover {
+
+    transform: translateX(6px);
+
+}
+
+.project-row:hover::before {
+
+    width: 4px;
+
+}
+
+.project-row-number {
+
+    font-size: 26px;
+
+    font-weight: 800;
+
+    color: var(--border);
+
+    min-width: 32px;
+
+    transition: color .2s ease;
+
+}
+
+/* Número em amarelo quando a obra está ativa */
+
+.project-row.status-ativa .project-row-number {
+
+    color: var(--primary-dark);
+
+}
+
+.project-row-main {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+.project-row-main h3 {
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.project-row-location {
+
+    margin-top: 2px;
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+.project-row-details {
+
+    display: flex;
+
+    gap: 24px;
+
+    margin-top: 12px;
+
+}
+
+.project-row-details div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+.project-row-details small {
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+}
+
+.project-row-details strong {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: var(--text);
+
+}
+
+/* Status */
+
+.project-row-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    white-space: nowrap;
+
+}
+
+.status-dot {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+}
+
+.status-text {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+}
+
+.status-ativa .status-dot {
+    background: var(--primary);
+}
+
+.status-ativa .status-text {
+    color: var(--primary-dark);
+}
+
+.status-pausada .status-dot {
+    background: #B0B0B0;
+}
+
+.status-pausada .status-text {
+    color: var(--text-secondary);
+}
+
+.status-concluida .status-dot {
+    background: #4C4C4C;
+}
+
+.status-concluida .status-text {
+    color: var(--text-secondary);
+}
+
+/* ==========================================================
+   RESPONSIVIDADE (DESKTOP)
+========================================================== */
+
+@media (min-width: 768px) {
+
+    .home-page {
+
+        max-width: 640px;
+
+        padding-top: 48px;
+
+    }
+
+    .home-greeting h1 {
+
+        font-size: 30px;
+
+    }
+
+    .summary-number {
+
+        font-size: 44px;
+
+    }
+
+    .project-row:hover {
+
+        transform: translateX(10px);
+
+    }
+
+}
