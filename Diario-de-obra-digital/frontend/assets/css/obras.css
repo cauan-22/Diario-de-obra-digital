@@ -1,0 +1,131 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: obras.css
+   Descrição: Estilos da página de listagem de Obras
+
+   Observação: reaproveita .home-logo, .home-projects-header,
+   .new-project-btn, .project-list/.project-row, .search-box,
+   .chip-group, .bottom-nav — todos utilitários genéricos já
+   existentes em home.css, components.css e nova-obra.css.
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA
+========================================================== */
+
+.obras-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.obras-page {
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    padding: 28px 20px 110px;
+
+}
+
+.obras-title-block {
+
+    margin-top: 26px;
+
+    margin-bottom: 20px;
+
+}
+
+.obras-title-block h1 {
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.obras-title-block p {
+
+    margin-top: 4px;
+
+    font-size: 13px;
+
+    color: var(--text-secondary);
+
+}
+
+/* ==========================================================
+   BUSCA + FILTRO
+========================================================== */
+
+.search-box {
+
+    margin-bottom: 14px;
+
+}
+
+#status-filter {
+
+    margin-bottom: 8px;
+
+}
+
+/* ==========================================================
+   SEÇÃO DE RESULTADOS
+========================================================== */
+
+.home-projects {
+
+    margin-top: 26px;
+
+}
+
+#empty-state {
+
+    margin-top: 20px;
+
+    text-align: center;
+
+}
+
+/* ==========================================================
+   RESPONSIVIDADE (DESKTOP)
+========================================================== */
+
+@media (min-width: 768px) {
+
+    .obras-page {
+
+        max-width: 640px;
+
+    }
+
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>RDOs | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="rdos-body">
+
+    <div class="top-bar"></div>
+
+    <main class="rdos-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="home-header-top">
+
+            <div class="home-logo">
+                <span class="home-logo-mark"></span>
+                BUILDTRACK
+            </div>
+
+            <button class="home-menu-btn" aria-label="Abrir menu" type="button">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+
+        </header>
+
+        <div class="obras-title-block">
+            <h1>RDOs</h1>
+            <p id="rdos-count">0 registros encontrados</p>
+        </div>
+
+        <!-- ============================
+             BUSCA
+        ============================= -->
+
+        <div class="search-box">
+
+            <span class="material-symbols-outlined search-icon">search</span>
+
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Buscar por obra, número ou data"
+            >
+
+        </div>
+
+        <!-- ============================
+             FILTRO POR OBRA (gerado via JS)
+        ============================= -->
+
+        <div class="chip-group chip-group--wrap" id="obra-filter"></div>
+
+        <!-- ============================
+             LISTA
+        ============================= -->
+
+        <section class="rdo-list-section">
+
+            <div class="rdo-list" id="rdo-list"></div>
+
+            <p class="rdo-hint" id="empty-state" hidden>
+                Nenhum RDO encontrado.
+            </p>
+
+        </section>
+
+    </main>
+
+    <!-- ============================
+         BOTTOM NAVIGATION
+    ============================= -->
+
+    <nav class="bottom-nav">
+
+        <a href="home.html">
+            <span class="material-symbols-outlined">home</span>
+            Início
+        </a>
+
+        <a href="obras.html">
+            <span class="material-symbols-outlined">construction</span>
+            Obras
+        </a>
+
+        <a href="rdos.html" class="active">
+            <span class="material-symbols-outlined">description</span>
+            RDOs
+        </a>
+
+        <a href="perfil.html">
+            <span class="material-symbols-outlined">person</span>
+            Perfil
+        </a>
+
+    </nav>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/rdos.js"></script>
+
+</body>
+
+</html>

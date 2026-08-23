@@ -1,0 +1,336 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: nova-obra.css
+   Descrição: Estilos da página Nova Obra
+
+   Observação: vários componentes usados aqui (.input-group,
+   .rdo-nav, .rdo-toast, .rdo-subfield, .rdo-textarea) já foram
+   definidos em components.css e rdo.css. Não são exclusivos
+   daquelas telas — são utilitários genéricos, reaproveitados
+   aqui sem duplicar CSS.
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA
+========================================================== */
+
+.nova-obra-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.nova-obra-page {
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    padding: 24px 20px 110px;
+
+}
+
+/* ==========================================================
+   CABEÇALHO
+========================================================== */
+
+.nova-obra-header {
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+.nova-obra-title-block {
+
+    margin-top: 18px;
+
+}
+
+.nova-obra-title-block h1 {
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.nova-obra-title-block p {
+
+    margin-top: 4px;
+
+    font-size: 13px;
+
+    color: var(--text-secondary);
+
+}
+
+/* Linha amarela fina — único detalhe de cor logo no topo */
+
+.nova-obra-header-line {
+
+    width: 40px;
+
+    height: 2px;
+
+    margin-top: 18px;
+
+    background: var(--primary);
+
+}
+
+/* ==========================================================
+   SEÇÕES DO FORMULÁRIO
+========================================================== */
+
+.form-section {
+
+    margin-top: 30px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+.form-section:first-of-type {
+
+    margin-top: 28px;
+
+}
+
+.form-section-title {
+
+    margin-bottom: 18px;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+/* Campos lado a lado (ex: Cidade / Estado) */
+
+.form-row {
+
+    display: flex;
+
+    gap: 12px;
+
+}
+
+.form-row .input-group {
+
+    flex: 1;
+
+}
+
+.input-group--small {
+
+    flex: 0 0 88px;
+
+}
+
+/* Espaçamento entre grupos de campo dentro de uma seção */
+
+.form-section .input-group {
+
+    margin-bottom: 18px;
+
+}
+
+.form-section .input-group:last-child {
+
+    margin-bottom: 0;
+
+}
+
+/* ==========================================================
+   INDICAÇÃO DE CAMPO OBRIGATÓRIO
+========================================================== */
+
+.required-mark {
+
+    color: var(--danger);
+
+}
+
+.field-error-message {
+
+    display: none;
+
+    margin-top: 6px;
+
+    font-size: 12px;
+
+    color: var(--danger);
+
+}
+
+.input-wrapper.field-error {
+
+    border-color: var(--danger);
+
+    box-shadow: 0 0 0 4px rgba(198, 40, 40, .12);
+
+}
+
+.input-group.has-error .field-error-message {
+
+    display: block;
+
+}
+
+/* ==========================================================
+   BOTÕES SEGMENTADOS (status, tipo de registro)
+========================================================== */
+
+.chip-group {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+.chip-option {
+
+    flex: 1;
+
+    padding: 12px 4px;
+
+    border: 1px solid var(--border);
+
+    background: var(--surface);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+    transition: .15s ease;
+
+}
+
+.chip-option.active {
+
+    border-color: var(--primary);
+
+    color: var(--text);
+
+    background: rgba(244, 180, 0, .12);
+
+}
+
+/* ==========================================================
+   INFORMAÇÕES OPCIONAIS
+========================================================== */
+
+.form-section--optional {
+
+    padding-top: 0;
+
+    border-top: none;
+
+    margin-top: 22px;
+
+}
+
+.optional-toggle {
+
+    width: 100%;
+
+    padding: 13px 0;
+
+    border: 1px dashed var(--border);
+
+    background: none;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+    transition: .15s ease;
+
+}
+
+.optional-toggle:hover {
+
+    border-color: var(--primary);
+
+    color: var(--text);
+
+}
+
+.optional-fields {
+
+    margin-top: 20px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+/* ==========================================================
+   RESPONSIVIDADE (DESKTOP)
+========================================================== */
+
+@media (min-width: 768px) {
+
+    .nova-obra-page {
+
+        max-width: 640px;
+
+    }
+
+}

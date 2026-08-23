@@ -142,8 +142,7 @@ function openProject(id) {
 
 function handleNewProject() {
 
-    // Futuramente: abrir formulário/página de cadastro de obra
-    console.log("Abrir formulário de nova obra");
+    window.location.href = "nova-obra.html";
 
 }
 

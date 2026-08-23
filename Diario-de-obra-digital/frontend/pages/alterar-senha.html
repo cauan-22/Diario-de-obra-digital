@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Alterar Senha | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="perfil-body">
+
+    <div class="top-bar"></div>
+
+    <main class="perfil-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="obra-header">
+
+            <button class="obra-back-btn" id="back-btn" type="button">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+        </header>
+
+        <div class="nova-obra-title-block">
+            <h1>Alterar senha</h1>
+            <p>Sua nova senha precisa ter pelo menos 6 caracteres.</p>
+        </div>
+
+        <div class="nova-obra-header-line"></div>
+
+        <!-- ============================
+             FORMULÁRIO
+        ============================= -->
+
+        <form id="senha-form">
+
+            <section class="form-section">
+
+                <div class="input-group">
+
+                    <label for="current-password" class="input-label">
+                        Senha atual <span class="required-mark">*</span>
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="material-symbols-outlined input-icon">lock</span>
+
+                        <input type="password" id="current-password" autocomplete="current-password">
+
+                        <button type="button" class="password-toggle" id="current-password-toggle" aria-label="Mostrar senha">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+
+                    </div>
+
+                    <span class="field-error-message" id="error-current-password"></span>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label for="new-password" class="input-label">
+                        Nova senha <span class="required-mark">*</span>
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="material-symbols-outlined input-icon">lock</span>
+
+                        <input type="password" id="new-password" autocomplete="new-password">
+
+                        <button type="button" class="password-toggle" id="new-password-toggle" aria-label="Mostrar senha">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+
+                    </div>
+
+                    <span class="field-error-message" id="error-new-password"></span>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label for="confirm-password" class="input-label">
+                        Confirmar nova senha <span class="required-mark">*</span>
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="material-symbols-outlined input-icon">lock</span>
+
+                        <input type="password" id="confirm-password" autocomplete="new-password">
+
+                        <button type="button" class="password-toggle" id="confirm-password-toggle" aria-label="Mostrar senha">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+
+                    </div>
+
+                    <span class="field-error-message" id="error-confirm-password"></span>
+
+                </div>
+
+            </section>
+
+        </form>
+
+    </main>
+
+    <!-- ============================
+         AÇÕES FIXAS
+    ============================= -->
+
+    <nav class="rdo-nav">
+
+        <button class="rdo-nav-btn rdo-nav-btn--secondary" id="cancel-btn" type="button">
+            Cancelar
+        </button>
+
+        <button class="rdo-nav-btn rdo-nav-btn--primary" id="save-btn" type="button">
+            Salvar nova senha
+        </button>
+
+    </nav>
+
+    <div class="rdo-toast" id="toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/alterar-senha.js"></script>
+
+</body>
+
+</html>

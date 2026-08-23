@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Novo RDO | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="rdo-body">
+
+    <div class="top-bar"></div>
+
+    <main class="rdo-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="rdo-header">
+
+            <button
+                class="obra-back-btn"
+                id="rdo-back-btn"
+                type="button"
+            >
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+            <span class="rdo-header-number" id="rdo-number">RDO Nº 013</span>
+
+        </header>
+
+        <div class="rdo-title-block">
+
+            <h1 id="rdo-page-title">Novo RDO</h1>
+
+            <p id="rdo-obra-name">Casa Jardim</p>
+
+        </div>
+
+        <!-- ============================
+             INDICADOR DE PROGRESSO
+        ============================= -->
+
+        <div class="rdo-progress">
+
+            <div class="rdo-progress-meta">
+                <span class="rdo-progress-step" id="progress-step-label">01 / 09</span>
+                <span class="rdo-progress-title" id="progress-step-title">Identificação</span>
+            </div>
+
+            <div class="rdo-progress-track">
+                <div class="rdo-progress-fill" id="progress-fill"></div>
+            </div>
+
+        </div>
+
+        <!-- ============================
+             ETAPAS DO FORMULÁRIO
+        ============================= -->
+
+        <div class="rdo-steps" id="rdo-steps">
+
+            <!-- 01 — IDENTIFICAÇÃO -->
+
+            <section class="rdo-step active" data-step="1">
+
+                <div class="rdo-field-row">
+                    <small>Obra</small>
+                    <strong id="field-obra">Casa Jardim</strong>
+                </div>
+
+                <div class="rdo-field-row">
+                    <small>Contrato</small>
+                    <strong id="field-contrato">CT-2026-014</strong>
+                </div>
+
+                <div class="rdo-field-row">
+                    <small>Data</small>
+                    <strong id="field-data">20/08/2026</strong>
+                </div>
+
+                <div class="rdo-field-row">
+                    <small>Dia da semana</small>
+                    <strong id="field-dia-semana">Quinta-feira</strong>
+                </div>
+
+                <div class="rdo-field-row">
+                    <small>Responsável técnico</small>
+                    <strong id="field-responsavel">Eng. Carlos Mendes</strong>
+                </div>
+
+                <div class="rdo-field-row">
+                    <small>CREA / CAU</small>
+                    <strong id="field-crea">CREA/SC 123456</strong>
+                </div>
+
+                <p class="rdo-hint">
+                    Estas informações vêm da obra e não precisam ser digitadas novamente.
+                </p>
+
+            </section>
+
+            <!-- 02 — CONDIÇÕES CLIMÁTICAS -->
+
+            <section class="rdo-step" data-step="2">
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Manhã *</span>
+
+                    <div class="weather-group" data-period="manha">
+                        <button class="weather-option" type="button" data-value="bom">Bom</button>
+                        <button class="weather-option" type="button" data-value="chuvoso">Chuvoso</button>
+                        <button class="weather-option" type="button" data-value="impraticavel">Impraticável</button>
+                    </div>
+
+                </div>
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Tarde *</span>
+
+                    <div class="weather-group" data-period="tarde">
+                        <button class="weather-option" type="button" data-value="bom">Bom</button>
+                        <button class="weather-option" type="button" data-value="chuvoso">Chuvoso</button>
+                        <button class="weather-option" type="button" data-value="impraticavel">Impraticável</button>
+                    </div>
+
+                </div>
+
+                <div class="input-group rdo-textarea-group">
+
+                    <label for="weather-impact" class="input-label">
+                        Impacto no cronograma
+                    </label>
+
+                    <textarea
+                        id="weather-impact"
+                        class="rdo-textarea"
+                        placeholder="Descreva se o clima afetou as atividades..."
+                        rows="3"
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+            <!-- 03 — MÃO DE OBRA -->
+
+            <section class="rdo-step" data-step="3">
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Equipe própria</span>
+
+                    <ul class="rdo-mini-list" id="worker-own-list"></ul>
+
+                    <div class="rdo-quick-add">
+
+                        <input
+                            type="text"
+                            id="worker-own-input"
+                            placeholder="Ex: 02 Pedreiros"
+                        >
+
+                        <button
+                            class="add-item-btn"
+                            id="worker-own-add"
+                            type="button"
+                        >
+                            + Adicionar
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Equipe terceirizada</span>
+
+                    <ul class="rdo-mini-list" id="worker-out-list"></ul>
+
+                    <div class="rdo-quick-add">
+
+                        <input
+                            type="text"
+                            id="worker-out-input"
+                            placeholder="Ex: 03 Eletricistas — Empresa X"
+                        >
+
+                        <button
+                            class="add-item-btn"
+                            id="worker-out-add"
+                            type="button"
+                        >
+                            + Adicionar
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="rdo-total-row">
+                    <small>Total de trabalhadores</small>
+                    <strong id="worker-total">00</strong>
+                </div>
+
+            </section>
+
+            <!-- 04 — EQUIPAMENTOS -->
+
+            <section class="rdo-step" data-step="4">
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Em operação</span>
+
+                    <ul class="rdo-mini-list" id="equip-op-list"></ul>
+
+                    <div class="rdo-quick-add">
+
+                        <input
+                            type="text"
+                            id="equip-op-input"
+                            placeholder="Ex: 01 Betoneira"
+                        >
+
+                        <button
+                            class="add-item-btn"
+                            id="equip-op-add"
+                            type="button"
+                        >
+                            + Adicionar
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Parados / manutenção</span>
+
+                    <ul class="rdo-mini-list" id="equip-stop-list"></ul>
+
+                    <div class="rdo-quick-add">
+
+                        <input
+                            type="text"
+                            id="equip-stop-input"
+                            placeholder="Ex: 01 Andaime — aguardando montagem"
+                        >
+
+                        <button
+                            class="add-item-btn"
+                            id="equip-stop-add"
+                            type="button"
+                        >
+                            + Adicionar
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- 05 — ATIVIDADES REALIZADAS -->
+
+            <section class="rdo-step" data-step="5">
+
+                <p class="rdo-hint">
+                    Registre cada atividade separadamente.
+                </p>
+
+                <ol class="rdo-numbered-list" id="activity-list"></ol>
+
+                <div class="rdo-quick-add">
+
+                    <input
+                        type="text"
+                        id="activity-input"
+                        placeholder="Ex: Execução de alvenaria — Bloco A"
+                    >
+
+                    <button
+                        class="add-item-btn"
+                        id="activity-add"
+                        type="button"
+                    >
+                        + Adicionar atividade
+                    </button>
+
+                </div>
+
+            </section>
+
+            <!-- 06 — MATERIAIS E SUPRIMENTOS -->
+
+            <section class="rdo-step" data-step="6">
+
+                <ul class="rdo-material-list" id="material-list"></ul>
+
+                <button
+                    class="add-item-btn"
+                    id="material-add-toggle"
+                    type="button"
+                >
+                    + Adicionar material
+                </button>
+
+                <div class="rdo-material-form" id="material-form" hidden>
+
+                    <input type="text" id="material-name" placeholder="Material (ex: 50 sacos de cimento)">
+                    <input type="text" id="material-fornecedor" placeholder="Fornecedor">
+                    <input type="text" id="material-nf" placeholder="Nota fiscal">
+                    <input type="text" id="material-qtd" placeholder="Quantidade">
+
+                    <div class="rdo-material-form-actions">
+                        <button class="add-item-btn" id="material-cancel" type="button">Cancelar</button>
+                        <button class="add-item-btn add-item-btn--confirm" id="material-confirm" type="button">Adicionar</button>
+                    </div>
+
+                </div>
+
+                <div class="input-group rdo-textarea-group">
+
+                    <label for="material-tests" class="input-label">
+                        Ensaios / testes realizados
+                    </label>
+
+                    <textarea
+                        id="material-tests"
+                        class="rdo-textarea"
+                        placeholder="Ex: Coleta de corpo de prova para teste do concreto."
+                        rows="3"
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+            <!-- 07 — OCORRÊNCIAS -->
+
+            <section class="rdo-step" data-step="7">
+
+                <label class="rdo-checkbox">
+                    <input type="checkbox" id="no-occurrence">
+                    Sem ocorrências
+                </label>
+
+                <div class="input-group rdo-textarea-group">
+
+                    <label for="occurrence-text" class="input-label">
+                        Ocorrências / imprevistos
+                    </label>
+
+                    <textarea
+                        id="occurrence-text"
+                        class="rdo-textarea"
+                        placeholder="Ex: Atraso na entrega do aço por parte do fornecedor..."
+                        rows="4"
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+            <!-- 08 — EVIDÊNCIAS -->
+
+            <section class="rdo-step" data-step="8">
+
+                <div class="rdo-photo-list" id="photo-list"></div>
+
+                <input
+                    type="file"
+                    id="photo-input"
+                    accept="image/*"
+                    hidden
+                >
+
+                <button
+                    class="add-item-btn"
+                    id="photo-add-btn"
+                    type="button"
+                >
+                    + Adicionar foto
+                </button>
+
+            </section>
+
+            <!-- 09 — OBSERVAÇÕES -->
+
+            <section class="rdo-step" data-step="9">
+
+                <div class="input-group rdo-textarea-group">
+
+                    <label for="observations-text" class="input-label">
+                        Observações gerais
+                    </label>
+
+                    <textarea
+                        id="observations-text"
+                        class="rdo-textarea"
+                        placeholder="Adicione outras informações importantes sobre o dia."
+                        rows="5"
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+            <!-- 10 — REVISÃO -->
+
+            <section class="rdo-step" data-step="10">
+
+                <p class="rdo-hint">
+                    Confira o resumo antes de salvar.
+                </p>
+
+                <div class="rdo-review-row">
+                    <small>Data</small>
+                    <strong id="review-data">20/08/2026</strong>
+                </div>
+
+                <div class="rdo-review-row">
+                    <small>Atividades</small>
+                    <strong id="review-activities">00</strong>
+                </div>
+
+                <div class="rdo-review-row">
+                    <small>Trabalhadores</small>
+                    <strong id="review-workers">00</strong>
+                </div>
+
+                <div class="rdo-review-row">
+                    <small>Materiais</small>
+                    <strong id="review-materials">00</strong>
+                </div>
+
+                <div class="rdo-review-row">
+                    <small>Ocorrências</small>
+                    <strong id="review-occurrences">00</strong>
+                </div>
+
+                <div class="rdo-review-row">
+                    <small>Fotos</small>
+                    <strong id="review-photos">00</strong>
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- ============================
+         NAVEGAÇÃO INFERIOR
+    ============================= -->
+
+    <nav class="rdo-nav">
+
+        <button class="rdo-nav-btn rdo-nav-btn--secondary" id="btn-back" type="button">
+            Voltar
+        </button>
+
+        <button class="rdo-nav-btn rdo-nav-btn--primary" id="btn-next" type="button">
+            Próximo
+        </button>
+
+    </nav>
+
+    <!-- Aviso rápido (substitui alert()) -->
+
+    <div class="rdo-toast" id="rdo-toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/rdo.js"></script>
+
+</body>
+
+</html>

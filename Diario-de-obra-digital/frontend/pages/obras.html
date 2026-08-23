@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Obras | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="obras-body">
+
+    <div class="top-bar"></div>
+
+    <main class="obras-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="home-header-top">
+
+            <div class="home-logo">
+                <span class="home-logo-mark"></span>
+                BUILDTRACK
+            </div>
+
+            <button class="home-menu-btn" aria-label="Abrir menu" type="button">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+
+        </header>
+
+        <div class="obras-title-block">
+            <h1>Obras</h1>
+            <p id="obras-count">0 obras cadastradas</p>
+        </div>
+
+        <!-- ============================
+             BUSCA
+        ============================= -->
+
+        <div class="search-box">
+
+            <span class="material-symbols-outlined search-icon">search</span>
+
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Buscar por nome, cidade ou cliente"
+            >
+
+        </div>
+
+        <!-- ============================
+             FILTRO POR STATUS
+        ============================= -->
+
+        <div class="chip-group" id="status-filter">
+            <button class="chip-option active" type="button" data-value="todas">Todas</button>
+            <button class="chip-option" type="button" data-value="ativa">Ativa</button>
+            <button class="chip-option" type="button" data-value="pausada">Pausada</button>
+            <button class="chip-option" type="button" data-value="concluida">Concluída</button>
+        </div>
+
+        <!-- ============================
+             LISTA + AÇÃO
+        ============================= -->
+
+        <section class="home-projects">
+
+            <div class="home-projects-header">
+                <h2>Resultado</h2>
+                <button class="new-project-btn" id="new-project-btn" type="button">
+                    + Nova obra
+                </button>
+            </div>
+
+            <div class="project-list" id="project-list"></div>
+
+            <p class="rdo-hint" id="empty-state" hidden>
+                Nenhuma obra encontrada.
+            </p>
+
+        </section>
+
+    </main>
+
+    <!-- ============================
+         BOTTOM NAVIGATION
+    ============================= -->
+
+    <nav class="bottom-nav">
+
+        <a href="home.html">
+            <span class="material-symbols-outlined">home</span>
+            Início
+        </a>
+
+        <a href="obras.html" class="active">
+            <span class="material-symbols-outlined">construction</span>
+            Obras
+        </a>
+
+        <a href="rdos.html">
+            <span class="material-symbols-outlined">description</span>
+            RDOs
+        </a>
+
+        <a href="perfil.html">
+            <span class="material-symbols-outlined">person</span>
+            Perfil
+        </a>
+
+    </nav>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/obras.js"></script>
+
+</body>
+
+</html>

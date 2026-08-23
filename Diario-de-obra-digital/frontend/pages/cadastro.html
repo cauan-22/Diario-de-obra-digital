@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Criar Conta | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <div class="top-bar"></div>
+
+        <!-- Marca d'água -->
+        <img
+            src="../assets/images/logo1.png"
+            alt=""
+            class="login-watermark"
+        >
+
+        <div class="login-container">
+
+            <section class="login-card">
+
+                <!-- Logo -->
+                <img
+                    src="../assets/images/logo1.png"
+                    alt="BuildTrack"
+                    class="login-logo"
+                >
+
+                <h1 class="login-title">
+                    Criar conta
+                </h1>
+
+                <p class="login-subtitle">
+                    Sistema de Gestão de Obras
+                </p>
+
+                <div class="login-divider">
+                    <span></span>
+                </div>
+
+                <p class="login-description">
+                    Cadastre-se para começar a gerenciar suas obras.
+                </p>
+
+                <div class="login-divider">
+                    <span></span>
+                </div>
+
+                <form class="login-form" id="cadastro-form">
+
+                    <!-- Nome completo -->
+                    <div class="input-group">
+
+                        <label
+                            for="name"
+                            class="input-label"
+                        >
+                            Nome completo
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="material-symbols-outlined input-icon">
+                                person
+                            </span>
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                placeholder="Seu nome completo"
+                                autocomplete="name"
+                            >
+
+                        </div>
+
+                        <span class="field-error-message" id="error-name"></span>
+
+                    </div>
+
+                    <!-- E-mail -->
+                    <div class="input-group">
+
+                        <label
+                            for="email"
+                            class="input-label"
+                        >
+                            E-mail
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="material-symbols-outlined input-icon">
+                                mail
+                            </span>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="exemplo@empresa.com"
+                                autocomplete="email"
+                            >
+
+                        </div>
+
+                        <span class="field-error-message" id="error-email"></span>
+
+                    </div>
+
+                    <!-- Senha -->
+                    <div class="input-group">
+
+                        <label
+                            for="password"
+                            class="input-label"
+                        >
+                            Senha
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="material-symbols-outlined input-icon">
+                                lock
+                            </span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Mínimo de 6 caracteres"
+                                autocomplete="new-password"
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="password-toggle"
+                                aria-label="Mostrar senha"
+                            >
+
+                                <span class="material-symbols-outlined">
+                                    visibility
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                        <span class="field-error-message" id="error-password"></span>
+
+                    </div>
+
+                    <!-- Confirmar senha -->
+                    <div class="input-group">
+
+                        <label
+                            for="password-confirm"
+                            class="input-label"
+                        >
+                            Confirmar senha
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="material-symbols-outlined input-icon">
+                                lock
+                            </span>
+
+                            <input
+                                type="password"
+                                id="password-confirm"
+                                name="password-confirm"
+                                placeholder="Digite a senha novamente"
+                                autocomplete="new-password"
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="password-confirm-toggle"
+                                aria-label="Mostrar senha"
+                            >
+
+                                <span class="material-symbols-outlined">
+                                    visibility
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                        <span class="field-error-message" id="error-password-confirm"></span>
+
+                    </div>
+
+                    <!-- Botão -->
+                    <button
+                        type="submit"
+                        class="btn"
+                    >
+                        CRIAR CONTA
+                    </button>
+
+                </form>
+
+                <div class="login-links">
+
+                    <a
+                        href="login.html"
+                        class="register-link"
+                    >
+                        Já possui uma conta?
+                        <span>Entrar</span>
+                    </a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <div class="rdo-toast" id="cadastro-toast"></div>
+
+    <script src="../assets/js/cadastro.js"></script>
+
+</body>
+
+</html>

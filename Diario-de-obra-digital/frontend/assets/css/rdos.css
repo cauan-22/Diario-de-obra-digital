@@ -1,0 +1,110 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: rdos.css
+   Descrição: Estilos da página de listagem geral de RDOs
+
+   Observação: reaproveita .home-logo, .search-box, .chip-group,
+   .rdo-list/.rdo-row, .bottom-nav — utilitários genéricos já
+   existentes em home.css, components.css, nova-obra.css e
+   obra.css. .obras-title-block vem de obras.css.
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA
+========================================================== */
+
+.rdos-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.rdos-page {
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    padding: 28px 20px 110px;
+
+}
+
+/* ==========================================================
+   BUSCA + FILTRO
+========================================================== */
+
+.search-box {
+
+    margin-bottom: 14px;
+
+}
+
+/* O filtro de obras pode ter várias opções — permite quebrar
+   linha, diferente do chip-group de status (que tem só 3-4). */
+
+.chip-group--wrap {
+
+    flex-wrap: wrap;
+
+}
+
+.chip-group--wrap .chip-option {
+
+    flex: none;
+
+    padding: 10px 14px;
+
+}
+
+/* ==========================================================
+   LISTA
+========================================================== */
+
+.rdo-list-section {
+
+    margin-top: 24px;
+
+}
+
+#empty-state {
+
+    margin-top: 20px;
+
+    text-align: center;
+
+}
+
+/* ==========================================================
+   RESPONSIVIDADE (DESKTOP)
+========================================================== */
+
+@media (min-width: 768px) {
+
+    .rdos-page {
+
+        max-width: 640px;
+
+    }
+
+}

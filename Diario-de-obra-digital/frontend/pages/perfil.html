@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Perfil | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="perfil-body">
+
+    <div class="top-bar"></div>
+
+    <main class="perfil-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="home-header-top">
+
+            <div class="home-logo">
+                <span class="home-logo-mark"></span>
+                BUILDTRACK
+            </div>
+
+        </header>
+
+        <!-- ============================
+             IDENTIFICAÇÃO DO USUÁRIO
+        ============================= -->
+
+        <section class="perfil-id-block">
+
+            <span class="perfil-avatar" id="perfil-avatar">CS</span>
+
+            <div class="perfil-id-text">
+                <h1 id="perfil-name">Cauan Silva</h1>
+                <p id="perfil-role">Eng. Civil · Construtora Delta</p>
+            </div>
+
+        </section>
+
+        <!-- ============================
+             RESUMO
+        ============================= -->
+
+        <section class="rdo-summary-row" aria-label="Resumo da conta">
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">Obras ativas</span>
+                <strong class="quick-summary-value" id="stat-active-obras">02</strong>
+            </div>
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">RDOs criados</span>
+                <strong class="quick-summary-value" id="stat-total-rdos">37</strong>
+            </div>
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">Membro desde</span>
+                <strong class="quick-summary-value" id="stat-member-since">MAR 2026</strong>
+            </div>
+
+        </section>
+
+        <!-- 01 — DADOS PESSOAIS -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">01 / Dados pessoais</h2>
+
+            <div class="obra-info-row">
+                <small>Nome</small>
+                <div class="obra-info-value">
+                    <strong id="info-name">Cauan Fabiani</strong>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>E-mail</small>
+                <div class="obra-info-value">
+                    <strong id="info-email">cauan@exemplo.com</strong>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>Telefone</small>
+                <div class="obra-info-value">
+                    <strong id="info-phone">(47) 99999-0000</strong>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 02 — DADOS PROFISSIONAIS -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">02 / Dados profissionais</h2>
+
+            <div class="obra-info-row">
+                <small>Cargo</small>
+                <div class="obra-info-value">
+                    <strong id="info-role">Engenheiro Civil</strong>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>Empresa</small>
+                <div class="obra-info-value">
+                    <strong id="info-company">Construtora Delta</strong>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>CREA / CAU</small>
+                <div class="obra-info-value">
+                    <strong id="info-crea">CREA/SC 123456</strong>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ============================
+             AÇÕES DA CONTA
+        ============================= -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">03 / Conta</h2>
+
+            <div class="profile-action-list">
+
+                <button class="profile-action-row" id="action-edit-profile" type="button">
+                    <span class="material-symbols-outlined">edit</span>
+                    <span class="profile-action-label">Editar perfil</span>
+                    <span class="material-symbols-outlined profile-action-chevron">chevron_right</span>
+                </button>
+
+                <button class="profile-action-row" id="action-change-password" type="button">
+                    <span class="material-symbols-outlined">lock</span>
+                    <span class="profile-action-label">Alterar senha</span>
+                    <span class="material-symbols-outlined profile-action-chevron">chevron_right</span>
+                </button>
+
+            </div>
+
+            <button class="profile-logout-btn" id="action-logout" type="button">
+                <span class="material-symbols-outlined">logout</span>
+                Sair da conta
+            </button>
+
+        </section>
+
+    </main>
+
+    <!-- ============================
+         BOTTOM NAVIGATION
+    ============================= -->
+
+    <nav class="bottom-nav">
+
+        <a href="home.html">
+            <span class="material-symbols-outlined">home</span>
+            Início
+        </a>
+
+        <a href="obras.html">
+            <span class="material-symbols-outlined">construction</span>
+            Obras
+        </a>
+
+        <a href="rdos.html">
+            <span class="material-symbols-outlined">description</span>
+            RDOs
+        </a>
+
+        <a href="perfil.html" class="active">
+            <span class="material-symbols-outlined">person</span>
+            Perfil
+        </a>
+
+    </nav>
+
+    <div class="rdo-toast" id="perfil-toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/perfil.js"></script>
+
+</body>
+
+</html>

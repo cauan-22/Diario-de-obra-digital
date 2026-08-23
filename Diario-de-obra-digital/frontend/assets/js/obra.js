@@ -156,7 +156,7 @@ function renderRDOList(obra) {
 
         `;
 
-        row.addEventListener("click", () => openRDO(rdo.id));
+        row.addEventListener("click", () => openRDO(obra.id, rdo.id));
 
         list.appendChild(row);
 
@@ -168,28 +168,24 @@ function renderRDOList(obra) {
    AÇÕES
 ========================================================== */
 
-function openRDO(id) {
+function openRDO(obraId, rdoId) {
 
-    // Futuramente: abrir a página de detalhes do RDO
-    // window.location.href = `rdo.html?id=${id}`;
-
-    console.log("Abrir RDO com ID:", id);
+    window.location.href = `rdo-detalhes.html?obra=${obraId}&rdo=${rdoId}`;
 
 }
 
-function handleNewRDO() {
+function handleNewRDO(obraId) {
 
-    // Futuramente: abrir o formulário de criação de RDO
-    console.log("Criar novo RDO");
+    window.location.href = `rdo.html?obraId=${obraId}`;
 
 }
 
 function handleBack() {
 
-    if (document.referrer) {
-        history.back();
-        return;
-    }
+    // A Obra é sempre acessada a partir da Home, então "Voltar"
+    // deve ir sempre para lá — usar o histórico do navegador
+    // (history.back()) causava travamento depois de passar por
+    // várias páginas (Home -> Obra -> RDO -> Obra).
 
     window.location.href = "home.html";
 
@@ -213,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document
         .getElementById("new-rdo-btn")
-        .addEventListener("click", handleNewRDO);
+        .addEventListener("click", () => handleNewRDO(obra.id));
 
     document
         .getElementById("obra-back-btn")

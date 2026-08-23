@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Detalhes do RDO | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="rdo-detalhes-body">
+
+    <div class="top-bar"></div>
+
+    <main class="rdo-detalhes-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="obra-header">
+
+            <button
+                class="obra-back-btn"
+                id="rdo-detalhes-back-btn"
+                type="button"
+            >
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+            <button
+                class="obra-menu-btn"
+                aria-label="Opções do RDO"
+                type="button"
+            >
+                <span class="material-symbols-outlined">more_vert</span>
+            </button>
+
+        </header>
+
+        <!-- ============================
+             IDENTIFICAÇÃO DO RDO
+        ============================= -->
+
+        <section class="rdo-id-block">
+
+            <span class="rdo-id-number" id="rdo-id-number">Nº 012</span>
+
+            <div class="rdo-id-date">
+                <strong id="rdo-id-date">20 AGO 2026</strong>
+                <span id="rdo-id-weekday">Quinta-feira</span>
+            </div>
+
+            <div class="obra-info-row">
+                <small>Obra</small>
+                <div class="obra-info-value">
+                    <strong id="info-obra-name">Casa Jardim</strong>
+                    <span class="obra-info-sub" id="info-obra-city">Porto Belo / SC</span>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>Responsável técnico</small>
+                <div class="obra-info-value">
+                    <strong id="info-responsible">Eng. Carlos Mendes</strong>
+                    <span class="obra-info-sub" id="info-crea">CREA/SC 123456</span>
+                </div>
+            </div>
+
+            <div class="rdo-status-meta">
+                <span class="home-logo-mark"></span>
+                Registrado em <strong id="registered-date">20 AGO 2026</strong> às <strong id="registered-time">17:42</strong>
+            </div>
+
+        </section>
+
+        <!-- ============================
+             RESUMO DO DIA
+        ============================= -->
+
+        <section class="rdo-summary-row" aria-label="Resumo do dia">
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">Trabalhadores</span>
+                <strong class="quick-summary-value" id="summary-workers">00</strong>
+            </div>
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">Atividades</span>
+                <strong class="quick-summary-value" id="summary-activities">00</strong>
+            </div>
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">Materiais</span>
+                <strong class="quick-summary-value" id="summary-materials">00</strong>
+            </div>
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">Ocorrências</span>
+                <strong class="quick-summary-value" id="summary-occurrences">00</strong>
+            </div>
+
+            <div class="quick-summary-item">
+                <span class="quick-summary-label">Fotos</span>
+                <strong class="quick-summary-value" id="summary-photos">00</strong>
+            </div>
+
+        </section>
+
+        <!-- 01 — CONDIÇÕES CLIMÁTICAS -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">01 / Condições climáticas</h2>
+
+            <div class="obra-info-row">
+                <small>Manhã</small>
+                <div class="obra-info-value">
+                    <strong id="weather-manha">Bom</strong>
+                </div>
+            </div>
+
+            <div class="obra-info-row">
+                <small>Tarde</small>
+                <div class="obra-info-value">
+                    <strong id="weather-tarde">Chuvoso</strong>
+                </div>
+            </div>
+
+            <div class="readonly-text-block">
+                <small>Impacto no cronograma</small>
+                <p id="weather-impact">
+                    Perda de aproximadamente 2 horas de trabalho devido à chuva.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- 02 — MÃO DE OBRA -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">02 / Mão de obra</h2>
+
+            <div class="rdo-subfield">
+                <span class="rdo-subfield-label">Equipe própria</span>
+                <ul class="rdo-mini-list" id="workers-own-list"></ul>
+            </div>
+
+            <div class="rdo-subfield">
+                <span class="rdo-subfield-label">Equipe terceirizada</span>
+                <ul class="rdo-mini-list" id="workers-out-list"></ul>
+            </div>
+
+            <div class="rdo-total-row">
+                <small>Total</small>
+                <strong id="workers-total">00 trabalhadores</strong>
+            </div>
+
+        </section>
+
+        <!-- 03 — EQUIPAMENTOS -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">03 / Equipamentos</h2>
+
+            <div class="rdo-subfield">
+                <span class="rdo-subfield-label">Em operação</span>
+                <ul class="rdo-mini-list" id="equipment-operating-list"></ul>
+            </div>
+
+            <div class="rdo-subfield">
+                <span class="rdo-subfield-label">Parados / manutenção</span>
+                <ul class="rdo-mini-list" id="equipment-stopped-list"></ul>
+            </div>
+
+        </section>
+
+        <!-- 04 — ATIVIDADES REALIZADAS -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">04 / Atividades realizadas</h2>
+
+            <ol class="rdo-numbered-list" id="activities-list"></ol>
+
+        </section>
+
+        <!-- 05 — MATERIAIS E SUPRIMENTOS -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">05 / Materiais e suprimentos</h2>
+
+            <ul class="rdo-material-list" id="materials-list"></ul>
+
+            <div class="readonly-text-block" id="tests-block">
+                <small>Ensaios / testes</small>
+                <p id="tests-text"></p>
+            </div>
+
+        </section>
+
+        <!-- 06 — OCORRÊNCIAS -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">06 / Ocorrências</h2>
+
+            <div class="readonly-text-block">
+                <small>Ocorrências / imprevistos</small>
+                <p id="occurrences-text">Sem ocorrências registradas.</p>
+            </div>
+
+        </section>
+
+        <!-- 07 — EVIDÊNCIAS -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">07 / Evidências</h2>
+
+            <div class="photo-gallery" id="photo-gallery"></div>
+
+        </section>
+
+        <!-- 08 — OBSERVAÇÕES -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">08 / Observações</h2>
+
+            <div class="readonly-text-block">
+                <small>Observações gerais</small>
+                <p id="observations-text"></p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ============================
+         AÇÕES FIXAS
+    ============================= -->
+
+    <nav class="rdo-nav">
+
+        <button class="rdo-nav-btn rdo-nav-btn--secondary" id="edit-rdo-btn" type="button">
+            Editar RDO
+        </button>
+
+        <button class="rdo-nav-btn rdo-nav-btn--primary" id="generate-pdf-btn" type="button">
+            Gerar PDF
+        </button>
+
+    </nav>
+
+    <!-- ============================
+         LIGHTBOX (foto ampliada)
+    ============================= -->
+
+    <div class="photo-lightbox" id="photo-lightbox" hidden>
+
+        <button class="photo-lightbox-close" id="photo-lightbox-close" type="button" aria-label="Fechar">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <img src="" alt="" id="photo-lightbox-img">
+
+        <p id="photo-lightbox-caption"></p>
+
+    </div>
+
+    <div class="rdo-toast" id="rdo-detalhes-toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/rdo-detalhes.js"></script>
+
+</body>
+
+</html>

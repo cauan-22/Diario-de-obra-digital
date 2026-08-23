@@ -5,6 +5,12 @@
 @import url("login.css");
 @import url("home.css");
 @import url("obra.css");
+@import url("rdo.css");
+@import url("nova-obra.css");
+@import url("rdo-detalhes.css");
+@import url("perfil.css");
+@import url("obras.css");
+@import url("rdos.css");
 
 @import url(
     "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"

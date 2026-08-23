@@ -1,0 +1,1132 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: rdo.css
+   Descrição: Estilos da página Novo RDO
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA
+========================================================== */
+
+.rdo-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.rdo-page {
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    /* espaço extra embaixo para não ficar atrás da navegação fixa */
+    padding: 24px 20px 110px;
+
+}
+
+/* ==========================================================
+   CABEÇALHO
+========================================================== */
+
+.rdo-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+.rdo-header-number {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    color: var(--text-secondary);
+
+}
+
+.rdo-title-block {
+
+    margin-top: 18px;
+
+}
+
+.rdo-title-block h1 {
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.rdo-title-block p {
+
+    margin-top: 4px;
+
+    font-size: 13px;
+
+    color: var(--text-secondary);
+
+}
+
+/* ==========================================================
+   INDICADOR DE PROGRESSO
+========================================================== */
+
+.rdo-progress {
+
+    margin-top: 22px;
+
+}
+
+.rdo-progress-meta {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+}
+
+.rdo-progress-step {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    color: var(--text-secondary);
+
+}
+
+.rdo-progress-title {
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.rdo-progress-track {
+
+    width: 100%;
+
+    height: 2px;
+
+    background: var(--border);
+
+}
+
+.rdo-progress-fill {
+
+    height: 100%;
+
+    width: 11.11%;
+
+    background: var(--primary);
+
+    transition: width .3s ease;
+
+}
+
+/* ==========================================================
+   ETAPAS
+========================================================== */
+
+.rdo-steps {
+
+    margin-top: 28px;
+
+}
+
+.rdo-step {
+
+    display: none;
+
+}
+
+.rdo-step.active {
+
+    display: block;
+
+    animation: fadeIn .25s ease;
+
+}
+
+/* ==========================================================
+   CAMPOS SOMENTE LEITURA (etapa 01)
+========================================================== */
+
+.rdo-field-row {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.rdo-field-row small {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+}
+
+.rdo-field-row strong {
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: var(--text);
+
+    text-align: right;
+
+}
+
+.rdo-hint {
+
+    margin-top: 16px;
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+/* ==========================================================
+   SUBCAMPOS (agrupam label + conteúdo dentro de uma etapa)
+========================================================== */
+
+.rdo-subfield {
+
+    margin-bottom: 26px;
+
+}
+
+.rdo-subfield-label {
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+/* ==========================================================
+   CONDIÇÕES CLIMÁTICAS — BOTÕES SEGMENTADOS
+========================================================== */
+
+.weather-group {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+.weather-option {
+
+    flex: 1;
+
+    padding: 12px 4px;
+
+    border: 1px solid var(--border);
+
+    background: var(--surface);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+    transition: .15s ease;
+
+}
+
+.weather-option.active {
+
+    border-color: var(--primary);
+
+    color: var(--text);
+
+    background: rgba(244, 180, 0, .12);
+
+}
+
+/* ==========================================================
+   TEXTAREAS (reaproveitando o visual do input-wrapper)
+========================================================== */
+
+.rdo-textarea-group {
+
+    margin-top: 4px;
+
+}
+
+.rdo-textarea {
+
+    padding: 14px 16px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    font-size: 14px;
+
+    font-family: inherit;
+
+    color: var(--text);
+
+    resize: vertical;
+
+    transition: .2s;
+}
+
+.rdo-textarea:focus {
+
+    outline: none;
+
+    border-color: var(--primary);
+
+    box-shadow: 0 0 0 4px rgba(244, 180, 0, .15);
+
+}
+
+.rdo-textarea:disabled {
+
+    background: var(--background);
+
+    color: var(--text-secondary);
+
+}
+
+.rdo-textarea::placeholder {
+
+    color: #999;
+
+}
+
+/* ==========================================================
+   LISTAS DINÂMICAS (mão de obra, equipamentos)
+========================================================== */
+
+.rdo-mini-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.rdo-mini-list li {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 11px 0;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 14px;
+
+    color: var(--text);
+
+}
+
+.rdo-mini-list li:last-child {
+
+    border-bottom: none;
+
+}
+
+.remove-item-btn {
+
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    background: none;
+
+    color: var(--text-secondary);
+
+    font-size: 18px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+}
+
+.remove-item-btn:hover {
+
+    color: var(--danger);
+
+}
+
+/* Campo de adição rápida (input + botão) */
+
+.rdo-quick-add {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 12px;
+
+}
+
+.rdo-quick-add input {
+
+    flex: 1;
+
+    height: 46px;
+
+    padding: 0 14px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    font-size: 14px;
+
+    color: var(--text);
+
+}
+
+.rdo-quick-add input:focus {
+
+    outline: none;
+
+    border-color: var(--primary);
+
+}
+
+/* Botão "+ Adicionar" — outline tracejado, não sólido.
+   O amarelo sólido fica reservado para a ação principal (Salvar RDO). */
+
+.add-item-btn {
+
+    padding: 0 16px;
+
+    height: 46px;
+
+    border: 1px dashed var(--border);
+
+    background: none;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: .15s ease;
+
+}
+
+.add-item-btn:hover {
+
+    border-color: var(--primary);
+
+    color: var(--text);
+
+}
+
+/* Variante usada isoladamente (não dentro do rdo-quick-add) */
+
+.rdo-step > .add-item-btn {
+
+    width: 100%;
+
+    margin-top: 4px;
+
+}
+
+.add-item-btn--confirm {
+
+    border-style: solid;
+
+    border-color: var(--text);
+
+    color: var(--text);
+
+}
+
+/* ==========================================================
+   TOTAL (mão de obra)
+========================================================== */
+
+.rdo-total-row {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    padding-top: 16px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+.rdo-total-row small {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+}
+
+.rdo-total-row strong {
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    color: var(--primary-dark);
+
+}
+
+/* ==========================================================
+   ATIVIDADES — LISTA NUMERADA
+========================================================== */
+
+.rdo-numbered-list {
+
+    list-style: none;
+
+    margin-bottom: 12px;
+
+}
+
+.rdo-numbered-list li {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.rdo-numbered-list li:last-child {
+
+    border-bottom: none;
+
+}
+
+.rdo-numbered-list .activity-number {
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    color: var(--border);
+
+    min-width: 24px;
+
+}
+
+.rdo-numbered-list .activity-text {
+
+    flex: 1;
+
+    font-size: 14px;
+
+    color: var(--text);
+
+}
+
+/* ==========================================================
+   MATERIAIS
+========================================================== */
+
+.rdo-material-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    margin-bottom: 12px;
+
+}
+
+.rdo-material-list li {
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.rdo-material-list li:last-child {
+
+    border-bottom: none;
+
+}
+
+.material-item-top {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+}
+
+.material-item-top strong {
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: var(--text);
+
+}
+
+.material-item-details {
+
+    margin-top: 4px;
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+.rdo-material-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 12px;
+
+    padding: 16px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+}
+
+.rdo-material-form[hidden] {
+
+    display: none;
+
+}
+
+.rdo-material-form input {
+
+    height: 46px;
+
+    padding: 0 14px;
+
+    background: var(--background);
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    color: var(--text);
+
+}
+
+.rdo-material-form input:focus {
+
+    outline: none;
+
+    border-color: var(--primary);
+
+}
+
+.rdo-material-form-actions {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 4px;
+
+}
+
+.rdo-material-form-actions .add-item-btn {
+
+    flex: 1;
+
+}
+
+/* ==========================================================
+   OCORRÊNCIAS
+========================================================== */
+
+.rdo-checkbox {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 16px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: var(--text);
+
+    cursor: pointer;
+
+}
+
+.rdo-checkbox input {
+
+    width: 18px;
+    height: 18px;
+
+    accent-color: var(--primary);
+
+}
+
+/* ==========================================================
+   EVIDÊNCIAS (FOTOS)
+========================================================== */
+
+.rdo-photo-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+    margin-bottom: 14px;
+
+}
+
+.photo-item {
+
+    display: flex;
+
+    gap: 12px;
+
+    padding-bottom: 14px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.photo-item:last-child {
+
+    border-bottom: none;
+
+    padding-bottom: 0;
+
+}
+
+.photo-item img {
+
+    width: 72px;
+    height: 72px;
+
+    object-fit: cover;
+
+    border: 1px solid var(--border);
+
+}
+
+.photo-item-fields {
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+}
+
+.photo-item-fields input {
+
+    height: 40px;
+
+    padding: 0 12px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    color: var(--text);
+
+}
+
+.photo-item-fields input:focus {
+
+    outline: none;
+
+    border-color: var(--primary);
+
+}
+
+.photo-item-remove {
+
+    align-self: flex-start;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+    background: none;
+
+    border: none;
+
+    cursor: pointer;
+
+}
+
+.photo-item-remove:hover {
+
+    color: var(--danger);
+
+}
+
+/* ==========================================================
+   REVISÃO
+========================================================== */
+
+.rdo-review-row {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.rdo-review-row:last-child {
+
+    border-bottom: none;
+
+}
+
+.rdo-review-row small {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+}
+
+.rdo-review-row strong {
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    color: var(--text);
+
+}
+
+/* ==========================================================
+   NAVEGAÇÃO INFERIOR FIXA
+========================================================== */
+
+.rdo-nav {
+
+    position: fixed;
+
+    left: 0;
+
+    bottom: 0;
+
+    width: 100%;
+
+    display: flex;
+
+    gap: 12px;
+
+    padding: 14px 20px;
+
+    background: var(--surface);
+
+    border-top: 1px solid var(--border);
+
+    z-index: 100;
+
+}
+
+.rdo-nav-btn {
+
+    flex: 1;
+
+    height: 50px;
+
+    border: none;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition: .15s ease;
+
+}
+
+.rdo-nav-btn--secondary {
+
+    background: none;
+
+    border: 1px solid var(--border);
+
+    color: var(--text);
+
+}
+
+.rdo-nav-btn--secondary:hover {
+
+    border-color: var(--text);
+
+}
+
+.rdo-nav-btn--secondary:disabled {
+
+    opacity: 0;
+
+    pointer-events: none;
+
+}
+
+.rdo-nav-btn--primary {
+
+    background: var(--primary);
+
+    color: var(--text);
+
+}
+
+.rdo-nav-btn--primary:hover {
+
+    background: var(--primary-dark);
+
+}
+
+.rdo-nav-btn--primary:active {
+
+    transform: scale(.98);
+
+}
+
+/* ==========================================================
+   AVISO (toast) — substitui alert()
+========================================================== */
+
+.rdo-toast {
+
+    position: fixed;
+
+    left: 20px;
+
+    right: 20px;
+
+    bottom: 84px;
+
+    padding: 14px 16px;
+
+    background: var(--text);
+
+    color: var(--background);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    text-align: center;
+
+    z-index: 200;
+
+    opacity: 0;
+
+    transform: translateY(12px);
+
+    pointer-events: none;
+
+    transition: .25s ease;
+
+}
+
+.rdo-toast.visible {
+
+    opacity: 1;
+
+    transform: translateY(0);
+
+}
+
+/* ==========================================================
+   RESPONSIVIDADE (DESKTOP)
+========================================================== */
+
+@media (min-width: 768px) {
+
+    .rdo-page {
+
+        max-width: 640px;
+
+    }
+
+    .rdo-nav {
+
+        max-width: 640px;
+
+        left: 50%;
+
+        transform: translateX(-50%);
+
+    }
+
+}

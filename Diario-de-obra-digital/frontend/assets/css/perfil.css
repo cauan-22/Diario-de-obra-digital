@@ -1,0 +1,291 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: perfil.css
+   Descrição: Estilos da página de Perfil
+
+   Observação: reaproveita .home-logo, .obra-info-row,
+   .form-section, .rdo-summary-row, .quick-summary-item,
+   .bottom-nav — todos utilitários genéricos já existentes.
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA
+========================================================== */
+
+.perfil-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.perfil-page {
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    padding: 28px 20px 110px;
+
+}
+
+/* ==========================================================
+   IDENTIFICAÇÃO DO USUÁRIO
+========================================================== */
+
+.perfil-id-block {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    margin-top: 30px;
+
+}
+
+/* "Crachá" com iniciais, no lugar de foto genérica */
+
+.perfil-avatar {
+
+    width: 56px;
+    height: 56px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--text);
+
+    color: var(--background);
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    letter-spacing: .5px;
+
+    border-bottom: 3px solid var(--primary);
+
+}
+
+.perfil-id-text h1 {
+
+    font-size: 20px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.3px;
+
+    color: var(--text);
+
+}
+
+.perfil-id-text p {
+
+    margin-top: 3px;
+
+    font-size: 13px;
+
+    color: var(--text-secondary);
+
+}
+
+/* ==========================================================
+   AÇÕES DA CONTA
+========================================================== */
+
+.profile-action-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.profile-action-row {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    width: 100%;
+
+    padding: 16px 0;
+
+    border: none;
+
+    border-bottom: 1px solid var(--border);
+
+    background: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: var(--text);
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: transform .2s ease;
+
+}
+
+.profile-action-row:last-child {
+
+    border-bottom: none;
+
+}
+
+.profile-action-row::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: -20px;
+
+    top: 0;
+
+    bottom: 0;
+
+    width: 0;
+
+    background: var(--primary);
+
+    transition: width .2s ease;
+
+}
+
+.profile-action-row:hover {
+
+    transform: translateX(6px);
+
+}
+
+.profile-action-row:hover::before {
+
+    width: 4px;
+
+}
+
+.profile-action-row > .material-symbols-outlined:first-child {
+
+    font-size: 20px;
+
+    color: var(--text-secondary);
+
+}
+
+.profile-action-label {
+
+    flex: 1;
+
+}
+
+.profile-action-chevron {
+
+    font-size: 20px;
+
+    color: var(--text-secondary);
+
+}
+
+/* ==========================================================
+   SAIR DA CONTA
+========================================================== */
+
+.profile-logout-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    width: 100%;
+
+    margin-top: 30px;
+
+    padding: 14px 0;
+
+    border: 1px solid var(--border);
+
+    background: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--danger);
+
+    cursor: pointer;
+
+    transition: .15s ease;
+
+}
+
+.profile-logout-btn:hover {
+
+    border-color: var(--danger);
+
+    background: rgba(198, 40, 40, .05);
+
+}
+
+.profile-logout-btn .material-symbols-outlined {
+
+    font-size: 18px;
+
+}
+
+/* ==========================================================
+   RESPONSIVIDADE (DESKTOP)
+========================================================== */
+
+@media (min-width: 768px) {
+
+    .perfil-page {
+
+        max-width: 640px;
+
+    }
+
+}

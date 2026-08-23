@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Editar Perfil | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="perfil-body">
+
+    <div class="top-bar"></div>
+
+    <main class="perfil-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="obra-header">
+
+            <button class="obra-back-btn" id="back-btn" type="button">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+        </header>
+
+        <div class="nova-obra-title-block">
+            <h1>Editar perfil</h1>
+            <p>Atualize suas informações pessoais e profissionais.</p>
+        </div>
+
+        <div class="nova-obra-header-line"></div>
+
+        <!-- ============================
+             FORMULÁRIO
+        ============================= -->
+
+        <form id="editar-perfil-form">
+
+            <!-- 01 — DADOS PESSOAIS -->
+
+            <section class="form-section">
+
+                <h2 class="form-section-title">01 / Dados pessoais</h2>
+
+                <div class="input-group">
+                    <label for="name-input" class="input-label">
+                        Nome <span class="required-mark">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="name-input">
+                    </div>
+                    <span class="field-error-message" id="error-name">Campo obrigatório.</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="email-input" class="input-label">
+                        E-mail <span class="required-mark">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email-input">
+                    </div>
+                    <span class="field-error-message" id="error-email">E-mail inválido.</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="phone-input" class="input-label">
+                        Telefone
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="phone-input" placeholder="(00) 00000-0000">
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- 02 — DADOS PROFISSIONAIS -->
+
+            <section class="form-section">
+
+                <h2 class="form-section-title">02 / Dados profissionais</h2>
+
+                <div class="input-group">
+                    <label for="role-input" class="input-label">
+                        Cargo
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="role-input">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="company-input" class="input-label">
+                        Empresa
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="company-input">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="crea-input" class="input-label">
+                        CREA / CAU
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="crea-input">
+                    </div>
+                </div>
+
+            </section>
+
+        </form>
+
+    </main>
+
+    <!-- ============================
+         AÇÕES FIXAS
+    ============================= -->
+
+    <nav class="rdo-nav">
+
+        <button class="rdo-nav-btn rdo-nav-btn--secondary" id="cancel-btn" type="button">
+            Cancelar
+        </button>
+
+        <button class="rdo-nav-btn rdo-nav-btn--primary" id="save-btn" type="button">
+            Salvar alterações
+        </button>
+
+    </nav>
+
+    <div class="rdo-toast" id="toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/perfil-editar.js"></script>
+
+</body>
+
+</html>

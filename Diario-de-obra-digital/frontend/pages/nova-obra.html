@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Nova Obra | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="nova-obra-body">
+
+    <div class="top-bar"></div>
+
+    <main class="nova-obra-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="nova-obra-header">
+
+            <button
+                class="obra-back-btn"
+                id="nova-obra-back-btn"
+                type="button"
+            >
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+        </header>
+
+        <div class="nova-obra-title-block">
+
+            <h1>Nova obra</h1>
+
+            <p>Cadastre as informações principais da obra.</p>
+
+        </div>
+
+        <div class="nova-obra-header-line"></div>
+
+        <!-- ============================
+             FORMULÁRIO
+        ============================= -->
+
+        <form id="nova-obra-form">
+
+            <!-- 01 — IDENTIFICAÇÃO -->
+
+            <section class="form-section">
+
+                <h2 class="form-section-title">01 / Identificação</h2>
+
+                <div class="input-group">
+                    <label for="obra-name-input" class="input-label">
+                        Nome da obra <span class="required-mark">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="obra-name-input" placeholder="Ex: Casa Jardim">
+                    </div>
+                    <span class="field-error-message" id="error-obra-name">Campo obrigatório.</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="obra-client-input" class="input-label">
+                        Cliente <span class="required-mark">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="obra-client-input" placeholder="Ex: João Silva">
+                    </div>
+                    <span class="field-error-message" id="error-obra-client">Campo obrigatório.</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="obra-contract-input" class="input-label">
+                        Número do contrato
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="obra-contract-input" placeholder="Ex: CT-2026-014">
+                    </div>
+                </div>
+
+                <div class="rdo-subfield">
+                    <span class="rdo-subfield-label">Status</span>
+                    <div class="chip-group" id="status-group">
+                        <button class="chip-option active" type="button" data-value="ativa">Ativa</button>
+                        <button class="chip-option" type="button" data-value="pausada">Pausada</button>
+                        <button class="chip-option" type="button" data-value="concluida">Concluída</button>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- 02 — LOCALIZAÇÃO -->
+
+            <section class="form-section">
+
+                <h2 class="form-section-title">02 / Localização</h2>
+
+                <div class="input-group">
+                    <label for="obra-address-input" class="input-label">
+                        Endereço
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="obra-address-input" placeholder="Ex: Rua das Palmeiras, 250">
+                    </div>
+                </div>
+
+                <div class="form-row">
+
+                    <div class="input-group">
+                        <label for="obra-city-input" class="input-label">
+                            Cidade <span class="required-mark">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text" id="obra-city-input" placeholder="Ex: Porto Belo">
+                        </div>
+                        <span class="field-error-message" id="error-obra-city">Campo obrigatório.</span>
+                    </div>
+
+                    <div class="input-group input-group--small">
+                        <label for="obra-state-input" class="input-label">
+                            Estado <span class="required-mark">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text" id="obra-state-input" placeholder="SC" maxlength="2">
+                        </div>
+                        <span class="field-error-message" id="error-obra-state">Obrigatório.</span>
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+                    <label for="obra-cep-input" class="input-label">
+                        CEP
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="obra-cep-input" placeholder="Ex: 88210-000">
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- 03 — RESPONSÁVEIS -->
+
+            <section class="form-section">
+
+                <h2 class="form-section-title">03 / Responsáveis</h2>
+
+                <div class="input-group">
+                    <label for="obra-responsible-input" class="input-label">
+                        Responsável técnico <span class="required-mark">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="obra-responsible-input" placeholder="Ex: Eng. Carlos Mendes">
+                    </div>
+                    <span class="field-error-message" id="error-obra-responsible">Campo obrigatório.</span>
+                </div>
+
+                <div class="rdo-subfield">
+                    <span class="rdo-subfield-label">Tipo de registro</span>
+                    <div class="chip-group" id="registration-type-group">
+                        <button class="chip-option active" type="button" data-value="CREA">CREA</button>
+                        <button class="chip-option" type="button" data-value="CAU">CAU</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="obra-registration-number-input" class="input-label">
+                        Número do CREA / CAU <span class="required-mark">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="obra-registration-number-input" placeholder="Ex: SC-123456">
+                    </div>
+                    <span class="field-error-message" id="error-obra-registration-number">Campo obrigatório.</span>
+                </div>
+
+            </section>
+
+            <!-- 04 — PLANEJAMENTO -->
+
+            <section class="form-section">
+
+                <h2 class="form-section-title">04 / Planejamento</h2>
+
+                <div class="form-row">
+
+                    <div class="input-group">
+                        <label for="obra-start-date-input" class="input-label">
+                            Data de início <span class="required-mark">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="date" id="obra-start-date-input">
+                        </div>
+                        <span class="field-error-message" id="error-obra-start-date">Campo obrigatório.</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="obra-end-date-input" class="input-label">
+                            Previsão de término
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="date" id="obra-end-date-input">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="input-group rdo-textarea-group">
+                    <label for="obra-description-input" class="input-label">
+                        Descrição da obra
+                    </label>
+                    <textarea
+                        id="obra-description-input"
+                        class="rdo-textarea"
+                        placeholder="Descreva brevemente o objetivo ou escopo desta obra."
+                        rows="4"
+                    ></textarea>
+                </div>
+
+            </section>
+
+            <!-- INFORMAÇÕES OPCIONAIS -->
+
+            <section class="form-section form-section--optional">
+
+                <button
+                    class="optional-toggle"
+                    id="optional-toggle"
+                    type="button"
+                >
+                    + Adicionar mais informações
+                </button>
+
+                <div class="optional-fields" id="optional-fields" hidden>
+
+                    <div class="input-group">
+                        <label for="obra-budget-input" class="input-label">Orçamento</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="obra-budget-input" placeholder="Ex: R$ 350.000,00">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="obra-area-input" class="input-label">Área da obra</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="obra-area-input" placeholder="Ex: 180 m²">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="obra-units-input" class="input-label">Número de unidades</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="obra-units-input" placeholder="Ex: 1">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="obra-company-input" class="input-label">Empresa responsável</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="obra-company-input" placeholder="Ex: Construtora Delta">
+                        </div>
+                    </div>
+
+                    <div class="input-group rdo-textarea-group">
+                        <label for="obra-observations-input" class="input-label">Observações</label>
+                        <textarea
+                            id="obra-observations-input"
+                            class="rdo-textarea"
+                            placeholder="Outras informações relevantes."
+                            rows="3"
+                        ></textarea>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </form>
+
+    </main>
+
+    <!-- ============================
+         AÇÕES FIXAS
+    ============================= -->
+
+    <nav class="rdo-nav">
+
+        <button class="rdo-nav-btn rdo-nav-btn--secondary" id="cancel-btn" type="button">
+            Cancelar
+        </button>
+
+        <button class="rdo-nav-btn rdo-nav-btn--primary" id="submit-btn" type="button">
+            Criar obra
+        </button>
+
+    </nav>
+
+    <div class="rdo-toast" id="nova-obra-toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/nova-obra.js"></script>
+
+</body>
+
+</html>
