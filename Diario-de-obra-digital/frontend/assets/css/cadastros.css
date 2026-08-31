@@ -1,0 +1,230 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: cadastros.css
+   Descrição: Estilos compartilhados pelas telas de cadastro
+   da obra (Equipe, Empresas Terceirizadas, Equipamentos).
+
+   Essas três telas têm exatamente o mesmo "formato de linha"
+   (nome + info secundária + badges + ações), por isso ficam
+   num arquivo só em vez de duplicado 3 vezes.
+
+   Reaproveita .tree-icon-btn, .tree-prazo-badge,
+   .tree-status-badge, .tree-chevron (de estrutura.css) e
+   .new-project-btn, .add-item-btn, .rdo-hint, .rdo-toast,
+   .obra-back-btn, .nova-obra-title-block (de outros arquivos).
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA (mesmo padrão de todas as telas internas)
+========================================================== */
+
+.cadastro-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.cadastro-page {
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    padding: 24px 20px 60px;
+
+}
+
+.cadastro-section {
+
+    margin-top: 28px;
+
+}
+
+/* ==========================================================
+   LINHA SIMPLES (funcionário / equipamento)
+========================================================== */
+
+.simple-list-row {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.simple-list-row:last-child {
+
+    border-bottom: none;
+
+}
+
+.simple-list-row-main {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+.simple-list-row-name {
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    color: var(--text);
+
+}
+
+.simple-list-row-sub {
+
+    margin-top: 2px;
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+.simple-list-row-badges {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 8px;
+
+}
+
+.simple-list-row-badges .tree-status-badge--inativo {
+
+    background: var(--background);
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+}
+
+/* ==========================================================
+   BLOCO EXPANSÍVEL (empresa terceirizada + funcionários)
+========================================================== */
+
+.empresa-block {
+
+    padding: 16px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.empresa-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+
+}
+
+.empresa-header .tree-chevron {
+
+    font-size: 20px;
+
+    color: var(--text-secondary);
+
+    transition: transform .2s ease;
+
+    flex-shrink: 0;
+
+}
+
+.empresa-header .tree-chevron.expanded {
+
+    transform: rotate(90deg);
+
+}
+
+.empresa-name-block {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+.empresa-name {
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.empresa-especialidade {
+
+    margin-top: 2px;
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+.funcionarios-list {
+
+    margin-left: 22px;
+
+    margin-top: 12px;
+
+    padding-left: 16px;
+
+    border-left: 1px solid var(--border);
+
+    display: none;
+
+}
+
+.funcionarios-list.expanded {
+
+    display: block;
+
+}

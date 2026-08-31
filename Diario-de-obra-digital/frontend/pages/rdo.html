@@ -173,9 +173,19 @@
 
                     <span class="rdo-subfield-label">Equipe própria</span>
 
+                    <div class="checklist" id="worker-own-checklist"></div>
+
+                    <p class="rdo-hint" id="worker-own-empty" hidden>
+                        Nenhum funcionário cadastrado nesta obra ainda.
+                    </p>
+
+                    <button class="progress-toggle-btn" id="worker-own-manual-toggle" type="button">
+                        + Adicionar funcionário manualmente
+                    </button>
+
                     <ul class="rdo-mini-list" id="worker-own-list"></ul>
 
-                    <div class="rdo-quick-add">
+                    <div class="rdo-quick-add" id="worker-own-quick-add" hidden>
 
                         <input
                             type="text"
@@ -199,9 +209,19 @@
 
                     <span class="rdo-subfield-label">Equipe terceirizada</span>
 
+                    <div class="checklist" id="worker-out-checklist"></div>
+
+                    <p class="rdo-hint" id="worker-out-empty" hidden>
+                        Nenhuma empresa terceirizada cadastrada nesta obra ainda.
+                    </p>
+
+                    <button class="progress-toggle-btn" id="worker-out-manual-toggle" type="button">
+                        + Adicionar funcionário manualmente
+                    </button>
+
                     <ul class="rdo-mini-list" id="worker-out-list"></ul>
 
-                    <div class="rdo-quick-add">
+                    <div class="rdo-quick-add" id="worker-out-quick-add" hidden>
 
                         <input
                             type="text"
@@ -221,6 +241,21 @@
 
                 </div>
 
+                <div class="input-group rdo-textarea-group">
+
+                    <label for="workforce-observation" class="input-label">
+                        Observação sobre a equipe (opcional)
+                    </label>
+
+                    <textarea
+                        id="workforce-observation"
+                        class="rdo-textarea"
+                        placeholder="Ex: Equipe trabalhou normalmente durante o período da manhã."
+                        rows="2"
+                    ></textarea>
+
+                </div>
+
                 <div class="rdo-total-row">
                     <small>Total de trabalhadores</small>
                     <strong id="worker-total">00</strong>
@@ -234,7 +269,19 @@
 
                 <div class="rdo-subfield">
 
-                    <span class="rdo-subfield-label">Em operação</span>
+                    <span class="rdo-subfield-label">Equipamentos cadastrados</span>
+
+                    <div class="checklist" id="equipment-checklist"></div>
+
+                    <p class="rdo-hint" id="equipment-empty" hidden>
+                        Nenhum equipamento cadastrado nesta obra ainda.
+                    </p>
+
+                </div>
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Em operação (manual)</span>
 
                     <ul class="rdo-mini-list" id="equip-op-list"></ul>
 
@@ -243,7 +290,7 @@
                         <input
                             type="text"
                             id="equip-op-input"
-                            placeholder="Ex: 01 Betoneira"
+                            placeholder="Ex: 01 Betoneira alugada"
                         >
 
                         <button
@@ -260,7 +307,7 @@
 
                 <div class="rdo-subfield">
 
-                    <span class="rdo-subfield-label">Parados / manutenção</span>
+                    <span class="rdo-subfield-label">Parados / manutenção (manual)</span>
 
                     <ul class="rdo-mini-list" id="equip-stop-list"></ul>
 
@@ -291,28 +338,93 @@
             <section class="rdo-step" data-step="5">
 
                 <p class="rdo-hint">
-                    Registre cada atividade separadamente.
+                    Selecione a partir da estrutura da obra, ou adicione uma atividade manual.
                 </p>
 
-                <ol class="rdo-numbered-list" id="activity-list"></ol>
+                <div class="rdo-subfield">
 
-                <div class="rdo-quick-add">
+                    <span class="rdo-subfield-label">Etapa</span>
 
-                    <input
-                        type="text"
-                        id="activity-input"
-                        placeholder="Ex: Execução de alvenaria — Bloco A"
-                    >
-
-                    <button
-                        class="add-item-btn"
-                        id="activity-add"
-                        type="button"
-                    >
-                        + Adicionar atividade
-                    </button>
+                    <select class="rdo-select" id="activity-etapa-select">
+                        <option value="">Selecione a etapa...</option>
+                    </select>
 
                 </div>
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Subetapa</span>
+
+                    <select class="rdo-select" id="activity-subetapa-select" disabled>
+                        <option value="">Selecione a etapa primeiro</option>
+                    </select>
+
+                </div>
+
+                <div class="rdo-subfield">
+
+                    <span class="rdo-subfield-label">Atividade</span>
+
+                    <select class="rdo-select" id="activity-select" disabled>
+                        <option value="">Selecione a subetapa primeiro</option>
+                    </select>
+
+                </div>
+
+                <div class="input-group rdo-textarea-group" id="activity-quantity-group" hidden>
+
+                    <label for="activity-quantity-input" class="input-label" id="activity-quantity-label">
+                        Quantidade realizada hoje
+                    </label>
+
+                    <div class="input-wrapper">
+                        <input type="number" id="activity-quantity-input" min="0" step="0.01" placeholder="0">
+                    </div>
+
+                </div>
+
+                <div class="input-group rdo-textarea-group">
+
+                    <label for="activity-observation-input" class="input-label">
+                        Observação da atividade (opcional)
+                    </label>
+
+                    <textarea
+                        id="activity-observation-input"
+                        class="rdo-textarea"
+                        placeholder="Descreva o que foi realizado..."
+                        rows="2"
+                    ></textarea>
+
+                </div>
+
+                <button class="add-item-btn" id="activity-add-cadastrada" type="button" style="width:100%">
+                    + Adicionar atividade
+                </button>
+
+                <button class="progress-toggle-btn" id="activity-manual-toggle" type="button">
+                    + Adicionar atividade manual
+                </button>
+
+                <div class="rdo-material-form" id="activity-manual-form" hidden>
+
+                    <input type="text" id="activity-manual-input" placeholder="Nome da atividade">
+
+                    <textarea
+                        id="activity-manual-observation"
+                        class="rdo-textarea"
+                        placeholder="Observação (opcional)"
+                        rows="2"
+                    ></textarea>
+
+                    <div class="rdo-material-form-actions">
+                        <button class="add-item-btn" id="activity-manual-cancel" type="button">Cancelar</button>
+                        <button class="add-item-btn add-item-btn--confirm" id="activity-manual-confirm" type="button">Adicionar</button>
+                    </div>
+
+                </div>
+
+                <ol class="rdo-numbered-list" id="activity-list"></ol>
 
             </section>
 

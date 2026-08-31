@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Empresas Terceirizadas | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="cadastro-body">
+
+    <div class="top-bar"></div>
+
+    <main class="cadastro-page">
+
+        <header class="obra-header">
+
+            <button class="obra-back-btn" id="back-btn" type="button">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+        </header>
+
+        <div class="nova-obra-title-block">
+            <h1>Empresas terceirizadas</h1>
+            <p id="obra-name-subtitle">Empresas e funcionários vinculados a esta obra.</p>
+        </div>
+
+        <div class="nova-obra-header-line"></div>
+
+        <section class="cadastro-section">
+
+            <div id="empresas-list"></div>
+
+            <p class="rdo-hint" id="empty-state" hidden>
+                Nenhuma empresa terceirizada cadastrada ainda.
+            </p>
+
+            <button class="new-project-btn" id="add-empresa-btn" type="button">
+                + Cadastrar empresa
+            </button>
+
+        </section>
+
+    </main>
+
+    <div class="rdo-toast" id="toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/terceirizados.js"></script>
+
+</body>
+
+</html>

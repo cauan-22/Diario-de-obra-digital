@@ -215,4 +215,28 @@ document.addEventListener("DOMContentLoaded", () => {
         .getElementById("obra-back-btn")
         .addEventListener("click", handleBack);
 
+    document
+        .getElementById("link-estrutura")
+        .addEventListener("click", () => {
+            window.location.href = `estrutura.html?id=${obra.id}`;
+        });
+
+    document
+        .getElementById("link-equipe")
+        .addEventListener("click", () => {
+            window.location.href = `equipe.html?id=${obra.id}`;
+        });
+
+    document
+        .getElementById("link-terceirizados")
+        .addEventListener("click", () => {
+            window.location.href = `terceirizados.html?id=${obra.id}`;
+        });
+
+    document
+        .getElementById("link-equipamentos")
+        .addEventListener("click", () => {
+            window.location.href = `equipamentos.html?id=${obra.id}`;
+        });
+
 });

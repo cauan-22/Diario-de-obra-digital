@@ -1,0 +1,387 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: estrutura.css
+   Descrição: Estilos da página Estrutura da Obra (EAP)
+
+   Observação: reaproveita .obra-header, .obra-back-btn,
+   .nova-obra-title-block, .nova-obra-header-line, .new-project-btn,
+   .add-item-btn, .rdo-hint, .rdo-toast — utilitários genéricos já
+   existentes em obra.css, nova-obra.css, home.css e rdo.css.
+========================================================== */
+
+/* ==========================================================
+   FUNDO DA PÁGINA
+========================================================== */
+
+.estrutura-body {
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.35) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+}
+
+/* ==========================================================
+   ESTRUTURA GERAL
+========================================================== */
+
+.estrutura-page {
+
+    max-width: 480px;
+
+    margin: 0 auto;
+
+    padding: 24px 20px 60px;
+
+}
+
+.estrutura-section {
+
+    margin-top: 28px;
+
+}
+
+/* ==========================================================
+   NÍVEL 1 — ETAPA
+========================================================== */
+
+.etapa-block {
+
+    padding: 16px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.etapa-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+
+}
+
+.etapa-header .tree-chevron {
+
+    font-size: 20px;
+
+    color: var(--text-secondary);
+
+    transition: transform .2s ease;
+
+    flex-shrink: 0;
+
+}
+
+.etapa-header .tree-chevron.expanded {
+
+    transform: rotate(90deg);
+
+}
+
+.etapa-code {
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    color: var(--text);
+
+    min-width: 22px;
+
+}
+
+.etapa-name {
+
+    flex: 1;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+}
+
+/* ==========================================================
+   AÇÕES DE LINHA (editar / excluir)
+========================================================== */
+
+.tree-row-actions {
+
+    display: flex;
+
+    gap: 2px;
+
+    flex-shrink: 0;
+
+}
+
+.tree-icon-btn {
+
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    background: none;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+}
+
+.tree-icon-btn .material-symbols-outlined {
+
+    font-size: 17px;
+
+}
+
+.tree-icon-btn:hover {
+
+    color: var(--text);
+
+}
+
+.tree-icon-btn.tree-icon-btn--danger:hover {
+
+    color: var(--danger);
+
+}
+
+/* ==========================================================
+   NÍVEL 2 — SUBETAPA
+========================================================== */
+
+.subetapa-list {
+
+    margin-left: 22px;
+
+    margin-top: 12px;
+
+    padding-left: 16px;
+
+    border-left: 1px solid var(--border);
+
+    display: none;
+
+}
+
+.subetapa-list.expanded {
+
+    display: block;
+
+}
+
+.subetapa-block {
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.subetapa-block:last-child {
+
+    border-bottom: none;
+
+}
+
+.subetapa-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    cursor: pointer;
+
+}
+
+.subetapa-header .tree-chevron {
+
+    font-size: 18px;
+
+}
+
+.subetapa-code {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: var(--text-secondary);
+
+    min-width: 34px;
+
+}
+
+.subetapa-name {
+
+    flex: 1;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: var(--text);
+
+}
+
+/* ==========================================================
+   NÍVEL 3 — ATIVIDADE
+========================================================== */
+
+.atividade-list {
+
+    margin-left: 18px;
+
+    margin-top: 10px;
+
+    padding-left: 14px;
+
+    border-left: 1px dashed var(--border);
+
+    display: none;
+
+}
+
+.atividade-list.expanded {
+
+    display: block;
+
+}
+
+.atividade-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 7px 0;
+
+}
+
+.atividade-row .atividade-name {
+
+    flex: 1;
+
+    font-size: 13px;
+
+    color: var(--text);
+
+}
+
+/* ==========================================================
+   BOTÕES "+ ADICIONAR" ANINHADOS
+   (reaproveitam .add-item-btn, só ajustam a largura/margem)
+========================================================== */
+
+/* ==========================================================
+   BADGES (prazo, quantidade, concluída)
+========================================================== */
+
+.tree-prazo-badge {
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+    padding: 2px 6px;
+
+    white-space: nowrap;
+
+    flex-shrink: 0;
+
+}
+
+.tree-status-badge {
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    padding: 2px 6px;
+
+    white-space: nowrap;
+
+    flex-shrink: 0;
+
+}
+
+.tree-status-badge--done {
+
+    background: rgba(244, 180, 0, .15);
+
+    color: var(--primary-dark);
+
+}
+
+/* Botão de marcar como concluída, quando ativo */
+
+.tree-icon-btn.tree-icon-btn--active {
+
+    color: var(--primary-dark);
+
+}
+
+/* ==========================================================
+   BOTÕES "+ ADICIONAR" ANINHADOS
+   (reaproveitam .add-item-btn, só ajustam a largura/margem)
+========================================================== */
+
+.tree-add-btn {
+
+    width: auto;
+
+    margin-top: 8px;
+
+    padding: 8px 14px;
+
+    font-size: 11px;
+
+}

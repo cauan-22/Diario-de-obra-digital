@@ -57,9 +57,9 @@ const existingRDOs = {
         equipmentOperating: ["01 Betoneira", "01 Mini Escavadeira"],
         equipmentStopped: ["01 Andaime — aguardando montagem"],
         activities: [
-            "Execução de alvenaria estrutural no 2º pavimento — Bloco A",
-            "Passagem de eletrodutos na laje de cobertura",
-            "Limpeza e organização do canteiro"
+            { type: "manual", description: "Execução de alvenaria estrutural no 2º pavimento — Bloco A", observation: "" },
+            { type: "manual", description: "Passagem de eletrodutos na laje de cobertura", observation: "" },
+            { type: "manual", description: "Limpeza e organização do canteiro", observation: "" }
         ],
         materials: [
             { name: "50 sacos de cimento", fornecedor: "Empresa X", nf: "12345", qtd: "50 sacos" },
@@ -78,6 +78,114 @@ const weekDays = [
 ];
 
 /* ==========================================================
+   CADASTROS DA OBRA (futuramente virão do backend)
+   Espelham os mesmos dados usados em estrutura.js, equipe.js,
+   terceirizados.js e equipamentos.js — quando o backend existir,
+   isso vira uma única chamada por obra, em vez de 4 mocks.
+========================================================== */
+
+const estruturaContext = {
+
+    1: {
+        etapas: [
+            {
+                id: 1,
+                name: "Estruturas",
+                subetapas: [
+                    {
+                        id: 1,
+                        name: "Vigas e Lajes",
+                        atividades: [
+                            { id: 1, name: "Execução de formas", quantidadeTotal: 120, unidade: "m²" },
+                            { id: 2, name: "Montagem de armaduras", quantidadeTotal: null, unidade: null },
+                            { id: 3, name: "Concretagem", quantidadeTotal: null, unidade: null }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "Fundações",
+                        atividades: [
+                            { id: 4, name: "Escavação", quantidadeTotal: null, unidade: null },
+                            { id: 5, name: "Montagem de armaduras", quantidadeTotal: null, unidade: null },
+                            { id: 6, name: "Concretagem", quantidadeTotal: null, unidade: null }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Alvenaria",
+                subetapas: []
+            }
+        ]
+    }
+
+};
+
+const equipeContext = {
+
+    1: [
+        { id: 1, name: "Carlos Mendes", funcao: "Pedreiro", status: "ativo" },
+        { id: 2, name: "João Silva", funcao: "Mestre de Obra", status: "ativo" },
+        { id: 3, name: "Pedro Santos", funcao: "Servente", status: "inativo" }
+    ]
+
+};
+
+const terceirizadosContext = {
+
+    1: [
+        {
+            id: 1,
+            name: "Eletrosul",
+            funcionarios: [
+                { id: 1, name: "João", funcao: "Eletricista", status: "ativo" },
+                { id: 2, name: "Marcos", funcao: "Eletricista", status: "ativo" },
+                { id: 3, name: "Rafael", funcao: "Ajudante", status: "ativo" }
+            ]
+        },
+        {
+            id: 2,
+            name: "Pintura ABC",
+            funcionarios: [
+                { id: 4, name: "Carlos", funcao: "Pintor", status: "ativo" },
+                { id: 5, name: "Lucas", funcao: "Pintor", status: "inativo" }
+            ]
+        }
+    ]
+
+};
+
+const equipamentosContext = {
+
+    1: [
+        { id: 1, name: "Betoneira 01", tipo: "Betoneira", status: "ativo" },
+        { id: 2, name: "Mini Escavadeira", tipo: "Escavadeira", status: "ativo" },
+        { id: 3, name: "Andaime 03", tipo: "Andaime", status: "inativo" }
+    ]
+
+};
+
+/* Funções auxiliares para navegar na estrutura pelos IDs
+   selecionados nos <select> da seção de atividades. */
+
+function getEtapas() {
+    return (estruturaContext[obraContext.id] || estruturaContext[1]).etapas;
+}
+
+function getEtapaById(etapaId) {
+    return getEtapas().find((e) => e.id === Number(etapaId));
+}
+
+function getSubetapaById(etapaId, subId) {
+    return getEtapaById(etapaId).subetapas.find((s) => s.id === Number(subId));
+}
+
+function getAtividadeById(etapaId, subId, atvId) {
+    return getSubetapaById(etapaId, subId).atividades.find((a) => a.id === Number(atvId));
+}
+
+/* ==========================================================
    ESTADO DO FORMULÁRIO
    (tudo o que o usuário vai preenchendo fica guardado aqui)
 ========================================================== */
@@ -93,12 +201,23 @@ const rdoState = {
         tarde: null
     },
 
-    workersOwn: [],
-    workersOut: [],
+    // Selecionados a partir da Equipe da obra / Empresas terceirizadas
+    workersOwnSelected: [],
+    workersOutSelected: [],
 
-    equipmentOperating: [],
-    equipmentStopped: [],
+    // Adicionados manualmente (funcionário avulso, fora do cadastro)
+    workersOwnManual: [],
+    workersOutManual: [],
 
+    // Selecionados a partir dos Equipamentos cadastrados
+    // Formato: { [equipamentoId]: "operando" | "parado" }
+    equipmentSelections: {},
+
+    // Equipamentos avulsos, fora do cadastro
+    equipmentOperatingManual: [],
+    equipmentStoppedManual: [],
+
+    // Cada item é { type: "cadastrada", ... } ou { type: "manual", ... }
     activities: [],
 
     materials: [],
@@ -361,7 +480,7 @@ function setupSimpleList({ inputId, addBtnId, listId, array, onChange }) {
 
 }
 
-/* Soma o número no início de cada item (ex: "02 Pedreiros" -> 2).
+/* Soma o número no início de cada item manual (ex: "02 Pedreiros" -> 2).
    Se não houver número, conta como 1 trabalhador. */
 
 function countWorkers(list) {
@@ -375,15 +494,199 @@ function countWorkers(list) {
 
 function updateWorkerTotal() {
 
-    const total = countWorkers(rdoState.workersOwn) + countWorkers(rdoState.workersOut);
+    const manualTotal = countWorkers(rdoState.workersOwnManual) + countWorkers(rdoState.workersOutManual);
+
+    const selectedTotal = rdoState.workersOwnSelected.length + rdoState.workersOutSelected.length;
+
+    const total = manualTotal + selectedTotal;
 
     document.getElementById("worker-total").textContent =
         String(total).padStart(2, "0");
 
 }
 
+/* Revela o formulário de adição manual (e some com o botão que
+   o revelou), reaproveitado nas 3 seções que têm essa opção. */
+
+function setupManualToggle(toggleBtnId, containerId) {
+
+    const toggleBtn = document.getElementById(toggleBtnId);
+    const container = document.getElementById(containerId);
+
+    toggleBtn.addEventListener("click", () => {
+        container.hidden = false;
+        toggleBtn.hidden = true;
+    });
+
+}
+
+/* ==========================================================
+   CHECKLIST — EQUIPE PRÓPRIA (cadastrada em "Equipe da obra")
+========================================================== */
+
+function setupWorkerOwnChecklist() {
+
+    const container = document.getElementById("worker-own-checklist");
+    const emptyState = document.getElementById("worker-own-empty");
+
+    const funcionarios = (equipeContext[obraContext.id] || []).filter((f) => f.status === "ativo");
+
+    emptyState.hidden = funcionarios.length > 0;
+
+    funcionarios.forEach((funcionario) => {
+
+        const row = document.createElement("label");
+
+        row.className = "checklist-row";
+
+        row.innerHTML = `
+            <input type="checkbox" value="${funcionario.id}">
+            <span class="checklist-row-name">
+                ${funcionario.name}
+                <small>${funcionario.funcao}</small>
+            </span>
+        `;
+
+        row.querySelector("input").addEventListener("change", (event) => {
+
+            if (event.target.checked) {
+                rdoState.workersOwnSelected.push(funcionario.id);
+            } else {
+                rdoState.workersOwnSelected = rdoState.workersOwnSelected.filter((id) => id !== funcionario.id);
+            }
+
+            updateWorkerTotal();
+
+        });
+
+        container.appendChild(row);
+
+    });
+
+}
+
+/* ==========================================================
+   CHECKLIST — EQUIPE TERCEIRIZADA (agrupada por empresa)
+========================================================== */
+
+function setupWorkerOutChecklist() {
+
+    const container = document.getElementById("worker-out-checklist");
+    const emptyState = document.getElementById("worker-out-empty");
+
+    const empresas = terceirizadosContext[obraContext.id] || [];
+
+    emptyState.hidden = empresas.length > 0;
+
+    empresas.forEach((empresa) => {
+
+        const ativos = empresa.funcionarios.filter((f) => f.status === "ativo");
+
+        if (ativos.length === 0) return;
+
+        const label = document.createElement("div");
+        label.className = "checklist-empresa-label";
+        label.textContent = empresa.name;
+        container.appendChild(label);
+
+        ativos.forEach((funcionario) => {
+
+            const key = `${empresa.id}:${funcionario.id}`;
+
+            const row = document.createElement("label");
+
+            row.className = "checklist-row";
+
+            row.innerHTML = `
+                <input type="checkbox" value="${key}">
+                <span class="checklist-row-name">
+                    ${funcionario.name}
+                    <small>${funcionario.funcao} — ${empresa.name}</small>
+                </span>
+            `;
+
+            row.querySelector("input").addEventListener("change", (event) => {
+
+                if (event.target.checked) {
+                    rdoState.workersOutSelected.push(key);
+                } else {
+                    rdoState.workersOutSelected = rdoState.workersOutSelected.filter((k) => k !== key);
+                }
+
+                updateWorkerTotal();
+
+            });
+
+            container.appendChild(row);
+
+        });
+
+    });
+
+}
+
+/* ==========================================================
+   CHECKLIST — EQUIPAMENTOS CADASTRADOS
+========================================================== */
+
+function setupEquipmentChecklist() {
+
+    const container = document.getElementById("equipment-checklist");
+    const emptyState = document.getElementById("equipment-empty");
+
+    const equipamentosAtivos = (equipamentosContext[obraContext.id] || []).filter((e) => e.status === "ativo");
+
+    emptyState.hidden = equipamentosAtivos.length > 0;
+
+    equipamentosAtivos.forEach((equipamento) => {
+
+        const row = document.createElement("div");
+
+        row.className = "checklist-row";
+
+        row.innerHTML = `
+            <span class="checklist-row-name">
+                ${equipamento.name}
+                <small>${equipamento.tipo}</small>
+            </span>
+            <div class="mini-toggle-group">
+                <button type="button" class="mini-toggle-btn" data-value="operando">Operando</button>
+                <button type="button" class="mini-toggle-btn" data-value="parado">Parado</button>
+            </div>
+        `;
+
+        const buttons = row.querySelectorAll(".mini-toggle-btn");
+
+        buttons.forEach((button) => {
+
+            button.addEventListener("click", () => {
+
+                const wasActive = button.classList.contains("active");
+
+                buttons.forEach((b) => b.classList.remove("active"));
+
+                if (wasActive) {
+                    delete rdoState.equipmentSelections[equipamento.id];
+                } else {
+                    button.classList.add("active");
+                    rdoState.equipmentSelections[equipamento.id] = button.dataset.value;
+                }
+
+            });
+
+        });
+
+        container.appendChild(row);
+
+    });
+
+}
+
 /* ==========================================================
    ATIVIDADES REALIZADAS
+   Cada atividade vem da estrutura cadastrada (etapa > subetapa
+   > atividade) ou é adicionada manualmente, quando a obra ainda
+   não tem essa atividade no cadastro.
 ========================================================== */
 
 function renderActivities() {
@@ -392,15 +695,28 @@ function renderActivities() {
 
     list.innerHTML = "";
 
-    rdoState.activities.forEach((text, index) => {
+    rdoState.activities.forEach((activity, index) => {
 
         const li = document.createElement("li");
 
         const number = String(index + 1).padStart(2, "0");
 
+        const content = activity.type === "cadastrada"
+            ? `
+                <strong>${activity.etapaName}</strong>
+                <span class="activity-breadcrumb"> › ${activity.subetapaName} › ${activity.atividadeName}</span>
+                ${activity.quantidade ? `<div class="activity-quantity">${activity.quantidade} ${activity.unidade} realizados hoje</div>` : ""}
+                ${activity.observation ? `<div class="activity-observation">${activity.observation}</div>` : ""}
+            `
+            : `
+                <strong>${activity.description}</strong>
+                <span class="activity-manual-tag">Manual</span>
+                ${activity.observation ? `<div class="activity-observation">${activity.observation}</div>` : ""}
+            `;
+
         li.innerHTML = `
             <span class="activity-number">${number}</span>
-            <span class="activity-text">${text}</span>
+            <span class="activity-text">${content}</span>
             <button class="remove-item-btn" type="button" aria-label="Remover">×</button>
         `;
 
@@ -415,32 +731,223 @@ function renderActivities() {
 
 }
 
-function setupActivities() {
+/* Mostra/esconde o campo de quantidade dependendo da atividade
+   selecionada ter (ou não) uma meta de quantidade cadastrada. */
 
-    const input = document.getElementById("activity-input");
-    const addBtn = document.getElementById("activity-add");
+function updateActivityQuantityField(atividade) {
 
-    function addActivity() {
+    const group = document.getElementById("activity-quantity-group");
+    const label = document.getElementById("activity-quantity-label");
+    const input = document.getElementById("activity-quantity-input");
 
-        const value = input.value.trim();
+    if (atividade && atividade.quantidadeTotal) {
+        group.hidden = false;
+        label.textContent = `Quantidade realizada hoje (${atividade.unidade})`;
+    } else {
+        group.hidden = true;
+    }
 
-        if (!value) return;
+    input.value = "";
 
-        rdoState.activities.push(value);
+}
 
-        input.value = "";
+function populateEtapaSelect() {
+
+    const select = document.getElementById("activity-etapa-select");
+
+    getEtapas().forEach((etapa) => {
+
+        const option = document.createElement("option");
+        option.value = etapa.id;
+        option.textContent = etapa.name;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+function populateSubetapaSelect(etapaId) {
+
+    const select = document.getElementById("activity-subetapa-select");
+
+    if (!etapaId) {
+        select.innerHTML = '<option value="">Selecione a etapa primeiro</option>';
+        select.disabled = true;
+        return;
+    }
+
+    const etapa = getEtapaById(etapaId);
+
+    select.innerHTML = '<option value="">Selecione a subetapa...</option>';
+
+    etapa.subetapas.forEach((sub) => {
+
+        const option = document.createElement("option");
+        option.value = sub.id;
+        option.textContent = sub.name;
+
+        select.appendChild(option);
+
+    });
+
+    select.disabled = etapa.subetapas.length === 0;
+
+}
+
+function populateAtividadeSelect(etapaId, subId) {
+
+    const select = document.getElementById("activity-select");
+
+    if (!subId) {
+        select.innerHTML = '<option value="">Selecione a subetapa primeiro</option>';
+        select.disabled = true;
+        updateActivityQuantityField(null);
+        return;
+    }
+
+    const sub = getSubetapaById(etapaId, subId);
+
+    select.innerHTML = '<option value="">Selecione a atividade...</option>';
+
+    sub.atividades.forEach((atividade) => {
+
+        const option = document.createElement("option");
+        option.value = atividade.id;
+        option.textContent = atividade.name;
+
+        select.appendChild(option);
+
+    });
+
+    select.disabled = sub.atividades.length === 0;
+
+    updateActivityQuantityField(null);
+
+}
+
+function setupActivitySelects() {
+
+    populateEtapaSelect();
+
+    const etapaSelect = document.getElementById("activity-etapa-select");
+    const subetapaSelect = document.getElementById("activity-subetapa-select");
+    const atividadeSelect = document.getElementById("activity-select");
+
+    etapaSelect.addEventListener("change", () => {
+
+        populateSubetapaSelect(etapaSelect.value);
+
+        atividadeSelect.innerHTML = '<option value="">Selecione a subetapa primeiro</option>';
+        atividadeSelect.disabled = true;
+
+        updateActivityQuantityField(null);
+
+    });
+
+    subetapaSelect.addEventListener("change", () => {
+        populateAtividadeSelect(etapaSelect.value, subetapaSelect.value);
+    });
+
+    atividadeSelect.addEventListener("change", () => {
+
+        if (!atividadeSelect.value) {
+            updateActivityQuantityField(null);
+            return;
+        }
+
+        const atividade = getAtividadeById(etapaSelect.value, subetapaSelect.value, atividadeSelect.value);
+
+        updateActivityQuantityField(atividade);
+
+    });
+
+    document.getElementById("activity-add-cadastrada").addEventListener("click", addAtividadeCadastrada);
+
+}
+
+function addAtividadeCadastrada() {
+
+    const etapaSelect = document.getElementById("activity-etapa-select");
+    const subetapaSelect = document.getElementById("activity-subetapa-select");
+    const atividadeSelect = document.getElementById("activity-select");
+
+    if (!etapaSelect.value || !subetapaSelect.value || !atividadeSelect.value) {
+        showToast("Selecione a etapa, a subetapa e a atividade.");
+        return;
+    }
+
+    const etapa = getEtapaById(etapaSelect.value);
+    const sub = getSubetapaById(etapaSelect.value, subetapaSelect.value);
+    const atividade = getAtividadeById(etapaSelect.value, subetapaSelect.value, atividadeSelect.value);
+
+    const quantidadeInput = document.getElementById("activity-quantity-input");
+    const observationInput = document.getElementById("activity-observation-input");
+
+    rdoState.activities.push({
+        type: "cadastrada",
+        etapaId: etapa.id,
+        subetapaId: sub.id,
+        atividadeId: atividade.id,
+        etapaName: etapa.name,
+        subetapaName: sub.name,
+        atividadeName: atividade.name,
+        quantidade: atividade.quantidadeTotal ? (Number(quantidadeInput.value) || 0) : null,
+        unidade: atividade.unidade || null,
+        observation: observationInput.value.trim()
+    });
+
+    observationInput.value = "";
+    updateActivityQuantityField(null);
+
+    renderActivities();
+
+    showToast("Atividade adicionada.");
+
+}
+
+/* Atividade manual — para quando a obra ainda não tem essa
+   atividade cadastrada na estrutura. Não altera o cadastro. */
+
+function setupActivityManual() {
+
+    const toggleBtn = document.getElementById("activity-manual-toggle");
+    const form = document.getElementById("activity-manual-form");
+    const cancelBtn = document.getElementById("activity-manual-cancel");
+    const confirmBtn = document.getElementById("activity-manual-confirm");
+    const nameInput = document.getElementById("activity-manual-input");
+    const observationInput = document.getElementById("activity-manual-observation");
+
+    toggleBtn.addEventListener("click", () => {
+        form.hidden = false;
+    });
+
+    cancelBtn.addEventListener("click", () => {
+        nameInput.value = "";
+        observationInput.value = "";
+        form.hidden = true;
+    });
+
+    confirmBtn.addEventListener("click", () => {
+
+        const name = nameInput.value.trim();
+
+        if (!name) return;
+
+        rdoState.activities.push({
+            type: "manual",
+            description: name,
+            observation: observationInput.value.trim()
+        });
+
+        nameInput.value = "";
+        observationInput.value = "";
+        form.hidden = true;
 
         renderActivities();
 
-    }
+        showToast("Atividade manual adicionada.");
 
-    addBtn.addEventListener("click", addActivity);
-
-    input.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            addActivity();
-        }
     });
 
 }
@@ -641,7 +1148,8 @@ function setupPhotos() {
 
 function renderReview() {
 
-    const totalWorkers = countWorkers(rdoState.workersOwn) + countWorkers(rdoState.workersOut);
+    const totalWorkers = countWorkers(rdoState.workersOwnManual) + countWorkers(rdoState.workersOutManual)
+        + rdoState.workersOwnSelected.length + rdoState.workersOutSelected.length;
 
     const hasOccurrence = document.getElementById("occurrence-text").value.trim().length > 0
         && !document.getElementById("no-occurrence").checked;
@@ -769,11 +1277,11 @@ function loadExistingRDOIntoState() {
     rdoState.weather.manha = existing.weather.manha;
     rdoState.weather.tarde = existing.weather.tarde;
 
-    rdoState.workersOwn = [...existing.workersOwn];
-    rdoState.workersOut = [...existing.workersOut];
+    rdoState.workersOwnManual = [...existing.workersOwn];
+    rdoState.workersOutManual = [...existing.workersOut];
 
-    rdoState.equipmentOperating = [...existing.equipmentOperating];
-    rdoState.equipmentStopped = [...existing.equipmentStopped];
+    rdoState.equipmentOperatingManual = [...existing.equipmentOperating];
+    rdoState.equipmentStoppedManual = [...existing.equipmentStopped];
 
     rdoState.activities = [...existing.activities];
 
@@ -821,11 +1329,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadExistingRDOIntoState();
 
+    // Mão de obra: cadastro (checklist) + manual (fallback)
+    setupWorkerOwnChecklist();
+    setupWorkerOutChecklist();
+
+    setupManualToggle("worker-own-manual-toggle", "worker-own-quick-add");
+    setupManualToggle("worker-out-manual-toggle", "worker-out-quick-add");
+
     setupSimpleList({
         inputId: "worker-own-input",
         addBtnId: "worker-own-add",
         listId: "worker-own-list",
-        array: rdoState.workersOwn,
+        array: rdoState.workersOwnManual,
         onChange: updateWorkerTotal
     });
 
@@ -833,25 +1348,30 @@ document.addEventListener("DOMContentLoaded", () => {
         inputId: "worker-out-input",
         addBtnId: "worker-out-add",
         listId: "worker-out-list",
-        array: rdoState.workersOut,
+        array: rdoState.workersOutManual,
         onChange: updateWorkerTotal
     });
+
+    // Equipamentos: cadastro (checklist) + manual (fallback)
+    setupEquipmentChecklist();
 
     setupSimpleList({
         inputId: "equip-op-input",
         addBtnId: "equip-op-add",
         listId: "equip-op-list",
-        array: rdoState.equipmentOperating
+        array: rdoState.equipmentOperatingManual
     });
 
     setupSimpleList({
         inputId: "equip-stop-input",
         addBtnId: "equip-stop-add",
         listId: "equip-stop-list",
-        array: rdoState.equipmentStopped
+        array: rdoState.equipmentStoppedManual
     });
 
-    setupActivities();
+    // Atividades: estrutura cadastrada + manual (fallback)
+    setupActivitySelects();
+    setupActivityManual();
     renderActivities();
 
     setupMaterials();

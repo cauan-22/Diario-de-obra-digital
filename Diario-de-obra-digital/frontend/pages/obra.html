@@ -126,59 +126,153 @@
         </section>
 
         <!-- ============================
-             RESUMO RÁPIDO
+             CADASTROS DA OBRA
         ============================= -->
 
-        <section class="obra-quick-summary" aria-label="Resumo rápido">
+        <section class="form-section">
 
-            <div class="quick-summary-item">
-                <span class="quick-summary-label">RDOs</span>
-                <strong class="quick-summary-value" id="quick-rdos">12</strong>
-            </div>
+            <h2 class="form-section-title">Cadastros da obra</h2>
 
-            <div class="quick-summary-item">
-                <span class="quick-summary-label">Último registro</span>
-                <strong class="quick-summary-value" id="quick-last">20 AGO 2026</strong>
+            <div class="profile-action-list">
+
+                <button class="profile-action-row" id="link-estrutura" type="button">
+                    <span class="material-symbols-outlined">account_tree</span>
+                    <span class="profile-action-label">Estrutura da obra</span>
+                    <span class="material-symbols-outlined profile-action-chevron">chevron_right</span>
+                </button>
+
+                <button class="profile-action-row" id="link-equipe" type="button">
+                    <span class="material-symbols-outlined">groups</span>
+                    <span class="profile-action-label">Equipe da obra</span>
+                    <span class="material-symbols-outlined profile-action-chevron">chevron_right</span>
+                </button>
+
+                <button class="profile-action-row" id="link-terceirizados" type="button">
+                    <span class="material-symbols-outlined">engineering</span>
+                    <span class="profile-action-label">Empresas terceirizadas</span>
+                    <span class="material-symbols-outlined profile-action-chevron">chevron_right</span>
+                </button>
+
+                <button class="profile-action-row" id="link-equipamentos" type="button">
+                    <span class="material-symbols-outlined">construction</span>
+                    <span class="profile-action-label">Equipamentos</span>
+                    <span class="material-symbols-outlined profile-action-chevron">chevron_right</span>
+                </button>
+
             </div>
 
         </section>
 
         <!-- ============================
-             DIÁRIO DE OBRA
+             ABAS
         ============================= -->
 
-        <section class="obra-diary">
+        <div class="obra-tabs">
+            <button class="obra-tab-btn active" data-tab="diario" type="button">Diário</button>
+            <button class="obra-tab-btn" data-tab="acompanhamento" type="button">Acompanhamento</button>
+        </div>
 
-            <div class="obra-diary-header">
+        <!-- ============================
+             ABA: DIÁRIO
+        ============================= -->
 
-                <div>
-                    <h2>Diário de obra</h2>
-                    <p>Registros realizados nesta obra.</p>
+        <div class="obra-tab-panel" data-panel="diario">
+
+            <!-- RESUMO RÁPIDO -->
+
+            <section class="obra-quick-summary" aria-label="Resumo rápido">
+
+                <div class="quick-summary-item">
+                    <span class="quick-summary-label">RDOs</span>
+                    <strong class="quick-summary-value" id="quick-rdos">12</strong>
                 </div>
 
-                <button
-                    class="new-rdo-btn"
-                    id="new-rdo-btn"
-                    type="button"
+                <div class="quick-summary-item">
+                    <span class="quick-summary-label">Último registro</span>
+                    <strong class="quick-summary-value" id="quick-last">20 AGO 2026</strong>
+                </div>
+
+            </section>
+
+            <!-- DIÁRIO DE OBRA -->
+
+            <section class="obra-diary">
+
+                <div class="obra-diary-header">
+
+                    <div>
+                        <h2>Diário de obra</h2>
+                        <p>Registros realizados nesta obra.</p>
+                    </div>
+
+                    <button
+                        class="new-rdo-btn"
+                        id="new-rdo-btn"
+                        type="button"
+                    >
+                        + Novo RDO
+                    </button>
+
+                </div>
+
+                <div
+                    class="rdo-list"
+                    id="rdo-list"
                 >
-                    + Novo RDO
-                </button>
+                    <!-- Registros gerados via obra.js -->
+                </div>
 
-            </div>
+            </section>
 
-            <div
-                class="rdo-list"
-                id="rdo-list"
-            >
-                <!-- Registros gerados via obra.js -->
-            </div>
+        </div>
 
-        </section>
+        <!-- ============================
+             ABA: ACOMPANHAMENTO
+        ============================= -->
+
+        <div class="obra-tab-panel" data-panel="acompanhamento" hidden>
+
+            <!-- PROGRESSO GERAL DA OBRA (baseado em datas) -->
+
+            <section class="progress-overview">
+
+                <h2 class="form-section-title">Progresso geral</h2>
+
+                <div class="progress-item-header">
+                    <span class="progress-item-name" id="obra-progress-name">Obra</span>
+                    <span class="progress-item-percent" id="obra-progress-percent">0%</span>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill" id="obra-progress-fill"></div>
+                </div>
+
+                <p class="progress-item-meta" id="obra-progress-meta"></p>
+
+            </section>
+
+            <!-- PROGRESSO POR ETAPA (baseado em dias/quantidade/finalizada) -->
+
+            <section class="form-section">
+
+                <h2 class="form-section-title">Progresso por etapa</h2>
+
+                <div id="etapas-progress-list"></div>
+
+                <p class="rdo-hint" id="progress-empty-state" hidden>
+                    Nenhuma etapa ou atividade com prazo definido ainda.
+                    Defina um prazo na "Estrutura da obra" para acompanhar aqui.
+                </p>
+
+            </section>
+
+        </div>
 
     </main>
 
     <script src="../assets/js/components.js"></script>
     <script src="../assets/js/obra.js"></script>
+    <script src="../assets/js/acompanhamento.js"></script>
 
 </body>
 

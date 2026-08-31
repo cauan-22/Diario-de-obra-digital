@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Estrutura da Obra | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="estrutura-body">
+
+    <div class="top-bar"></div>
+
+    <main class="estrutura-page">
+
+        <!-- ============================
+             CABEÇALHO
+        ============================= -->
+
+        <header class="obra-header">
+
+            <button class="obra-back-btn" id="back-btn" type="button">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+        </header>
+
+        <div class="nova-obra-title-block">
+            <h1>Estrutura da obra</h1>
+            <p id="obra-name-subtitle">Organize a obra em etapas, subetapas e atividades.</p>
+        </div>
+
+        <div class="nova-obra-header-line"></div>
+
+        <!-- ============================
+             LISTA DE ETAPAS
+        ============================= -->
+
+        <section class="estrutura-section">
+
+            <div id="etapas-list"></div>
+
+            <p class="rdo-hint" id="empty-state" hidden>
+                Nenhuma etapa cadastrada ainda.
+            </p>
+
+            <button class="new-project-btn" id="add-etapa-btn" type="button">
+                + Nova etapa
+            </button>
+
+        </section>
+
+    </main>
+
+    <div class="rdo-toast" id="toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/estrutura.js"></script>
+
+</body>
+
+</html>

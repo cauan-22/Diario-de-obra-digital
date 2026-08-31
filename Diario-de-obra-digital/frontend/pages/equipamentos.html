@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Equipamentos da Obra | BuildTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
+
+</head>
+
+<body class="cadastro-body">
+
+    <div class="top-bar"></div>
+
+    <main class="cadastro-page">
+
+        <header class="obra-header">
+
+            <button class="obra-back-btn" id="back-btn" type="button">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar
+            </button>
+
+        </header>
+
+        <div class="nova-obra-title-block">
+            <h1>Equipamentos</h1>
+            <p id="obra-name-subtitle">Equipamentos cadastrados nesta obra.</p>
+        </div>
+
+        <div class="nova-obra-header-line"></div>
+
+        <section class="cadastro-section">
+
+            <div id="equipamentos-list"></div>
+
+            <p class="rdo-hint" id="empty-state" hidden>
+                Nenhum equipamento cadastrado ainda.
+            </p>
+
+            <button class="new-project-btn" id="add-equipamento-btn" type="button">
+                + Cadastrar equipamento
+            </button>
+
+        </section>
+
+    </main>
+
+    <div class="rdo-toast" id="toast"></div>
+
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/equipamentos.js"></script>
+
+</body>
+
+</html>

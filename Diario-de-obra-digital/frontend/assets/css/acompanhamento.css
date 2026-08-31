@@ -1,0 +1,288 @@
+/* ==========================================================
+   BUILDTRACK
+   Arquivo: acompanhamento.css
+   Descrição: Estilos das abas da tela de Obra e das barras
+   de progresso da aba "Acompanhamento".
+========================================================== */
+
+/* ==========================================================
+   ABAS
+========================================================== */
+
+.obra-tabs {
+
+    display: flex;
+
+    margin-top: 30px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.obra-tab-btn {
+
+    flex: 1;
+
+    position: relative;
+
+    padding: 12px 0;
+
+    border: none;
+
+    background: none;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+}
+
+.obra-tab-btn.active {
+
+    color: var(--text);
+
+}
+
+.obra-tab-btn.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: -1px;
+
+    height: 2px;
+
+    background: var(--primary);
+
+}
+
+.obra-tab-panel[hidden] {
+
+    display: none;
+
+}
+
+/* ==========================================================
+   PROGRESSO GERAL DA OBRA
+========================================================== */
+
+.progress-overview {
+
+    margin-top: 24px;
+
+}
+
+.progress-item-header {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 8px;
+
+}
+
+.progress-item-name {
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text);
+
+}
+
+.progress-item-name--small {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0;
+
+    text-transform: none;
+
+}
+
+.progress-item-percent {
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    color: var(--text);
+
+    white-space: nowrap;
+
+}
+
+.progress-item-percent--small {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+}
+
+/* ==========================================================
+   BARRA DE PROGRESSO
+========================================================== */
+
+.progress-track {
+
+    width: 100%;
+
+    height: 6px;
+
+    background: var(--border);
+
+}
+
+.progress-fill {
+
+    height: 100%;
+
+    width: 0%;
+
+    background: var(--primary);
+
+    transition: width .3s ease;
+
+}
+
+.progress-fill--overdue {
+
+    background: var(--danger);
+
+}
+
+.progress-fill--done {
+
+    background: var(--primary-dark);
+
+}
+
+.progress-item-meta {
+
+    margin-top: 6px;
+
+    font-size: 11px;
+
+    color: var(--text-secondary);
+
+}
+
+.progress-no-deadline {
+
+    margin-top: 6px;
+
+    font-size: 12px;
+
+    font-style: italic;
+
+    color: var(--text-secondary);
+
+}
+
+/* ==========================================================
+   PROGRESSO POR ETAPA / ATIVIDADE
+========================================================== */
+
+.progress-etapa-block {
+
+    padding: 18px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+.progress-etapa-block:last-child {
+
+    border-bottom: none;
+
+}
+
+.progress-toggle-btn {
+
+    margin-top: 10px;
+
+    padding: 0;
+
+    border: none;
+
+    background: none;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+
+    text-decoration: underline;
+
+    cursor: pointer;
+
+}
+
+.progress-toggle-btn:hover {
+
+    color: var(--text);
+
+}
+
+.progress-atividades-list {
+
+    margin-top: 14px;
+
+    margin-left: 16px;
+
+    padding-left: 14px;
+
+    border-left: 1px dashed var(--border);
+
+    display: none;
+
+}
+
+.progress-atividades-list.expanded {
+
+    display: block;
+
+}
+
+.progress-atividade-block {
+
+    padding: 12px 0;
+
+}
+
+.progress-atividade-block:not(:last-child) {
+
+    border-bottom: 1px solid var(--border);
+
+}
