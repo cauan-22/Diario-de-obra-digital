@@ -15,6 +15,7 @@ const estruturaRoutes = require("./routes/estrutura.routes");
 const funcionariosRoutes = require("./routes/funcionarios.routes");
 const terceirizadosRoutes = require("./routes/terceirizados.routes");
 const equipamentosRoutes = require("./routes/equipamentos.routes");
+const rdosRoutes = require("./routes/rdos.routes");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/", estruturaRoutes);
 app.use("/", funcionariosRoutes);
 app.use("/", terceirizadosRoutes);
 app.use("/", equipamentosRoutes);
+app.use("/", rdosRoutes);
 
 const PORT = process.env.PORT || 3000;
 

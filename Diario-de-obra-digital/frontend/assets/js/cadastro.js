@@ -150,7 +150,7 @@ function showToast(message) {
    ENVIO DO FORMULÁRIO
 ========================================================== */
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
 
     event.preventDefault();
 
@@ -167,14 +167,32 @@ function handleSubmit(event) {
         password: document.getElementById("password").value
     };
 
-    // Futuramente: enviar newUser para o backend (POST /usuarios).
-    console.log("Conta criada:", newUser);
+    const submitBtn = document.querySelector("#cadastro-form .btn");
 
-    showToast("Conta criada com sucesso. Redirecionando para o login...");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "CRIANDO CONTA...";
 
-    setTimeout(() => {
-        window.location.href = "login.html";
-    }, 1200);
+    try {
+
+        await apiFetch("/usuarios/cadastro", {
+            method: "POST",
+            body: JSON.stringify(newUser)
+        });
+
+        showToast("Conta criada com sucesso. Redirecionando para o login...");
+
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1200);
+
+    } catch (error) {
+
+        showToast(error.message);
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "CRIAR CONTA";
+
+    }
 
 }
 
