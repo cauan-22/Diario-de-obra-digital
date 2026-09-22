@@ -66,7 +66,7 @@ const progressoPorObra = {
    FORMATAÇÃO
 ========================================================== */
 
-function formatDateBR(isoDate) {
+function formatDateSimplesBR(isoDate) {
 
     const [year, month, day] = isoDate.split("-");
 
@@ -245,8 +245,8 @@ function renderObraProgress(ctx) {
     const meta = document.getElementById("obra-progress-meta");
 
     meta.textContent = progress.overdueDays > 0
-        ? `Início: ${formatDateBR(ctx.startDate)} · Previsão: ${formatDateBR(ctx.expectedEndDate)} · ${progress.overdueDays} dia${progress.overdueDays > 1 ? "s" : ""} além da previsão`
-        : `Início: ${formatDateBR(ctx.startDate)} · Previsão: ${formatDateBR(ctx.expectedEndDate)}`;
+        ? `Início: ${formatDateSimplesBR(ctx.startDate)} · Previsão: ${formatDateSimplesBR(ctx.expectedEndDate)} · ${progress.overdueDays} dia${progress.overdueDays > 1 ? "s" : ""} além da previsão`
+        : `Início: ${formatDateSimplesBR(ctx.startDate)} · Previsão: ${formatDateSimplesBR(ctx.expectedEndDate)}`;
 
 }
 
@@ -361,6 +361,13 @@ function setupTabs() {
                 panel.hidden = panel.dataset.panel !== button.dataset.tab;
             });
 
+            // Atualiza o nome da obra no momento de abrir a aba — assim
+            // já pega o nome real, que só chega depois da busca no backend.
+            if (button.dataset.tab === "acompanhamento") {
+                document.getElementById("obra-progress-name").textContent =
+                    document.getElementById("obra-name").textContent;
+            }
+
         });
 
     });
@@ -369,18 +376,20 @@ function setupTabs() {
 
 /* ==========================================================
    INICIALIZAÇÃO
+
+   IMPORTANTE: os dados de progresso (etapas, prazos, quantidade
+   realizada) continuam fictícios por enquanto — essa parte só
+   fica real quando o RDO passar a registrar as atividades
+   ligadas à Estrutura da obra (próximo passo do projeto).
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     setupTabs();
 
-    // getObraFromURL já existe em obra.js, carregado antes deste arquivo.
-    const obra = getObraFromURL();
+    const obraId = getObraIdFromURL();
 
-    const ctx = progressoPorObra[obra.id] || progressoPorObra[1];
-
-    document.getElementById("obra-progress-name").textContent = obra.name;
+    const ctx = progressoPorObra[obraId] || progressoPorObra[1];
 
     renderObraProgress(ctx);
     renderEtapasProgress(ctx);

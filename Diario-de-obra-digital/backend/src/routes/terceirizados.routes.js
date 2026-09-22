@@ -9,7 +9,7 @@ const router = express.Router();
 const terceirizadosController = require("../controllers/terceirizados.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
-router.get("/obras/:obraId/empresas", terceirizadosController.listar);
+router.get("/obras/:obraId/empresas", authMiddleware, terceirizadosController.listar);
 
 router.post("/obras/:obraId/empresas", authMiddleware, terceirizadosController.criarEmpresa);
 router.put("/empresas/:id", authMiddleware, terceirizadosController.atualizarEmpresa);

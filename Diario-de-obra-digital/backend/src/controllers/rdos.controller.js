@@ -7,6 +7,7 @@
 
 const pool = require("../db");
 const PDFDocument = require("pdfkit");
+const { obraPertenceAoUsuario } = require("../utils/obraOwnership");
 
 /* Conta o total de "pessoas" numa lista de descrições manuais,
    igual à lógica que já existe no frontend (ex: "02 Pedreiros" -> 2). */
@@ -22,8 +23,6 @@ function countManualWorkers(descriptions) {
 
 /* ==========================================================
    GET /obras/:obraId/rdos/next-number
-   Mostra qual vai ser o próximo número, antes de criar
-   (usado pela tela "Novo RDO" pra exibir "RDO Nº 013").
 ========================================================== */
 
 async function getNextRdoNumber(req, res) {
@@ -31,6 +30,12 @@ async function getNextRdoNumber(req, res) {
     const { obraId } = req.params;
 
     try {
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Obra não encontrada." });
+        }
 
         const result = await pool.query(
             "SELECT COALESCE(MAX(rdo_number), 0) + 1 AS next_number FROM rdos WHERE obra_id = $1",
@@ -55,6 +60,12 @@ async function listar(req, res) {
     const { obraId } = req.params;
 
     try {
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Obra não encontrada." });
+        }
 
         const rdosResult = await pool.query(
             "SELECT * FROM rdos WHERE obra_id = $1 ORDER BY rdo_number DESC",
@@ -302,6 +313,12 @@ async function criar(req, res) {
         return res.status(400).json({ error: "Data é obrigatória." });
     }
 
+    const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+    if (!pertence) {
+        return res.status(404).json({ error: "Obra não encontrada." });
+    }
+
     const client = await pool.connect();
 
     try {
@@ -358,8 +375,6 @@ async function criar(req, res) {
 
 /* ==========================================================
    PUT /rdos/:id (precisa estar logado)
-   Estratégia: apaga as "tabelas filhas" antigas e insere as
-   novas — mais simples e seguro do que comparar item a item.
 ========================================================== */
 
 async function atualizar(req, res) {
@@ -429,8 +444,6 @@ async function atualizar(req, res) {
 
 /* ==========================================================
    GET /rdos/:id/pdf
-   Gera o PDF na hora e já manda como resposta (não salva
-   arquivo nenhum no servidor).
 ========================================================== */
 
 async function gerarPDF(req, res) {
@@ -453,8 +466,6 @@ async function gerarPDF(req, res) {
         res.setHeader("Content-Disposition", `attachment; filename="RDO-${numeroFormatado}.pdf"`);
 
         doc.pipe(res);
-
-        /* Cabeçalho, com a faixa amarela característica do BuildTrack */
 
         doc.rect(0, 0, doc.page.width, 8).fill("#F4B400");
         doc.moveDown(2);

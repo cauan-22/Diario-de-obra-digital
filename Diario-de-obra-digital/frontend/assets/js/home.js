@@ -4,42 +4,6 @@
    Descrição: Lógica da página Home
 ========================================================== */
 
-/* ==========================================================
-   DADOS FICTÍCIOS (futuramente virão do backend)
-   Cada obra possui: id, nome, cidade, cliente, status, lastRDO
-========================================================== */
-
-const projectsData = [
-
-    {
-        id: 1,
-        name: "Casa Jardim",
-        city: "Porto Belo / SC",
-        client: "João Silva",
-        status: "ativa",
-        lastRDO: "20 AGO 2026"
-    },
-
-    {
-        id: 2,
-        name: "Reforma Escritório",
-        city: "Itajaí / SC",
-        client: "Empresa Delta",
-        status: "pausada",
-        lastRDO: "19 AGO 2026"
-    },
-
-    {
-        id: 3,
-        name: "Galpão Industrial",
-        city: "Balneário Camboriú / SC",
-        client: "Metalúrgica Norte",
-        status: "ativa",
-        lastRDO: "18 AGO 2026"
-    }
-
-];
-
 /* Texto exibido para cada status */
 
 const statusLabels = {
@@ -47,6 +11,30 @@ const statusLabels = {
     pausada: "Pausada",
     concluida: "Concluída"
 };
+
+/* ==========================================================
+   FORMATAÇÃO DE DATA
+   O backend manda a data em formato ISO (ex: "2026-08-20").
+========================================================== */
+
+function formatDateShort(isoDate) {
+
+    if (!isoDate) return "Nenhum RDO ainda";
+
+    const date = new Date(isoDate);
+
+    const months = [
+        "JAN", "FEV", "MAR", "ABR", "MAI", "JUN",
+        "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"
+    ];
+
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = months[date.getUTCMonth()];
+    const year = date.getUTCFullYear();
+
+    return `${day} ${month} ${year}`;
+
+}
 
 /* ==========================================================
    RENDERIZAÇÃO DA LISTA DE OBRAS
@@ -57,6 +45,14 @@ function renderProjects(projects) {
     const list = document.getElementById("project-list");
 
     list.innerHTML = "";
+
+    if (projects.length === 0) {
+
+        list.innerHTML = `<p class="rdo-hint">Nenhuma obra cadastrada ainda. Toque em "+ Nova obra" para começar.</p>`;
+
+        return;
+
+    }
 
     projects.forEach((project, index) => {
 
@@ -76,7 +72,7 @@ function renderProjects(projects) {
 
                 <h3>${project.name}</h3>
 
-                <p class="project-row-location">${project.city}</p>
+                <p class="project-row-location">${project.city} / ${project.state}</p>
 
                 <div class="project-row-details">
 
@@ -87,7 +83,7 @@ function renderProjects(projects) {
 
                     <div>
                         <small>Último RDO</small>
-                        <strong>${project.lastRDO}</strong>
+                        <strong>${formatDateShort(project.last_rdo_date)}</strong>
                     </div>
 
                 </div>
@@ -117,16 +113,36 @@ function renderSummary(projects) {
 
     const total = projects.length;
 
-    const active = projects.filter(p => p.status === "ativa").length;
+    const active = projects.filter((p) => p.status === "ativa").length;
 
-    document.getElementById("summary-total").textContent =
-        String(total).padStart(2, "0");
+    const totalRDOs = projects.reduce((sum, p) => sum + Number(p.rdo_count || 0), 0);
 
-    document.getElementById("summary-active").textContent =
-        String(active).padStart(2, "0");
+    document.getElementById("summary-total").textContent = String(total).padStart(2, "0");
+    document.getElementById("summary-active").textContent = String(active).padStart(2, "0");
+    document.getElementById("summary-rdos").textContent = String(totalRDOs).padStart(2, "0");
 
-    // O total de RDOs virá do backend futuramente.
-    // Por enquanto mantemos o valor fixo no HTML.
+}
+
+/* ==========================================================
+   CARREGAR OBRAS DO BACKEND
+========================================================== */
+
+async function loadProjects() {
+
+    const list = document.getElementById("project-list");
+
+    try {
+
+        const projects = await apiFetch("/obras");
+
+        renderProjects(projects);
+        renderSummary(projects);
+
+    } catch (error) {
+
+        list.innerHTML = `<p class="rdo-hint">Não foi possível carregar as obras: ${error.message}</p>`;
+
+    }
 
 }
 
@@ -152,9 +168,18 @@ function handleNewProject() {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    renderProjects(projectsData);
+    requireLogin();
 
-    renderSummary(projectsData);
+    // O nome vem do que foi salvo no login.js após autenticar —
+    // sem isso, a saudação sempre mostrava "Cauan" fixo, não
+    // importa quem estivesse logado.
+    const user = getStoredUser();
+
+    if (user) {
+        document.querySelector(".home-greeting-name").textContent = user.name.split(" ")[0];
+    }
+
+    loadProjects();
 
     document
         .getElementById("new-project-btn")

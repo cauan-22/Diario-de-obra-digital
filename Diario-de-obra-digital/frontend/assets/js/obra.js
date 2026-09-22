@@ -4,33 +4,6 @@
    Descrição: Lógica da página de Detalhes da Obra
 ========================================================== */
 
-/* ==========================================================
-   DADOS FICTÍCIOS (futuramente virão do backend)
-   Organizados por ID para simular uma busca real.
-========================================================== */
-
-const obrasDatabase = {
-
-    1: {
-        id: 1,
-        number: "01",
-        name: "Casa Jardim",
-        city: "Porto Belo / SC",
-        status: "ativa",
-        client: "João Silva",
-        contract: "CT-2026-014",
-        responsible: "Eng. Carlos Mendes",
-        crea: "CREA/SC 123456",
-        startDate: "05/08/2026",
-        rdos: [
-            { id: 12, date: "20 AGO 2026", workers: 5, activities: 3, occurrences: 1 },
-            { id: 11, date: "19 AGO 2026", workers: 6, activities: 4, occurrences: 0 },
-            { id: 10, date: "18 AGO 2026", workers: 4, activities: 2, occurrences: 0 }
-        ]
-    }
-
-};
-
 /* Texto exibido para cada status */
 
 const statusLabels = {
@@ -40,18 +13,52 @@ const statusLabels = {
 };
 
 /* ==========================================================
-   BUSCAR OBRA PELO ID DA URL
-   Ex: obra.html?id=1
-   Futuramente esta função fará uma chamada ao backend.
+   ID DA OBRA NA URL (ex: obra.html?id=1)
 ========================================================== */
 
-function getObraFromURL() {
+function getObraIdFromURL() {
 
     const params = new URLSearchParams(window.location.search);
 
-    const id = Number(params.get("id")) || 1;
+    return Number(params.get("id"));
 
-    return obrasDatabase[id] || obrasDatabase[1];
+}
+
+/* ==========================================================
+   FORMATAÇÃO DE DATA
+   O backend manda a data em formato ISO (ex: "2026-08-20").
+========================================================== */
+
+function formatDateBR(isoDate) {
+
+    if (!isoDate) return "—";
+
+    const date = new Date(isoDate);
+
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const year = date.getUTCFullYear();
+
+    return `${day}/${month}/${year}`;
+
+}
+
+function formatDateShort(isoDate) {
+
+    if (!isoDate) return "--";
+
+    const date = new Date(isoDate);
+
+    const months = [
+        "JAN", "FEV", "MAR", "ABR", "MAI", "JUN",
+        "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"
+    ];
+
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = months[date.getUTCMonth()];
+    const year = date.getUTCFullYear();
+
+    return `${day} ${month} ${year}`;
 
 }
 
@@ -61,11 +68,11 @@ function getObraFromURL() {
 
 function renderObraHeader(obra) {
 
-    document.getElementById("obra-number").textContent = obra.number;
+    document.getElementById("obra-number").textContent = String(obra.id).padStart(2, "0");
 
     document.getElementById("obra-name").textContent = obra.name;
 
-    document.getElementById("obra-location").textContent = obra.city;
+    document.getElementById("obra-location").textContent = `${obra.city} / ${obra.state}`;
 
     const statusEl = document.getElementById("obra-status");
 
@@ -74,19 +81,22 @@ function renderObraHeader(obra) {
     document.getElementById("obra-status-text").textContent =
         statusLabels[obra.status];
 
+    document.title = `${obra.name} | BuildTrack`;
+
 }
 
 function renderObraInfo(obra) {
 
     document.getElementById("info-client").textContent = obra.client;
 
-    document.getElementById("info-contract").textContent = obra.contract;
+    document.getElementById("info-contract").textContent = obra.contract || "—";
 
     document.getElementById("info-responsible").textContent = obra.responsible;
 
-    document.getElementById("info-crea").textContent = obra.crea;
+    document.getElementById("info-crea").textContent =
+        obra.registration_type ? `${obra.registration_type} ${obra.registration_number}` : (obra.registration_number || "—");
 
-    document.getElementById("info-start").textContent = obra.startDate;
+    document.getElementById("info-start").textContent = formatDateBR(obra.start_date);
 
 }
 
@@ -94,16 +104,14 @@ function renderObraInfo(obra) {
    RESUMO RÁPIDO
 ========================================================== */
 
-function renderQuickSummary(obra) {
+function renderQuickSummary(rdos) {
 
-    const total = obra.rdos.length;
+    document.getElementById("quick-rdos").textContent = rdos.length;
 
-    const lastRDO = obra.rdos[0];
-
-    document.getElementById("quick-rdos").textContent = total;
+    const lastRDO = rdos[0];
 
     document.getElementById("quick-last").textContent =
-        lastRDO ? lastRDO.date : "--";
+        lastRDO ? formatDateShort(lastRDO.date) : "Nenhum RDO ainda";
 
 }
 
@@ -111,13 +119,21 @@ function renderQuickSummary(obra) {
    HISTÓRICO DE RDOs
 ========================================================== */
 
-function renderRDOList(obra) {
+function renderRDOList(obraId, rdos) {
 
     const list = document.getElementById("rdo-list");
 
     list.innerHTML = "";
 
-    obra.rdos.forEach((rdo) => {
+    if (rdos.length === 0) {
+
+        list.innerHTML = `<p class="rdo-hint">Nenhum RDO registrado ainda. Toque em "+ Novo RDO" para começar.</p>`;
+
+        return;
+
+    }
+
+    rdos.forEach((rdo) => {
 
         const row = document.createElement("article");
 
@@ -125,7 +141,7 @@ function renderRDOList(obra) {
 
         row.dataset.id = rdo.id;
 
-        const rdoNumber = String(rdo.id).padStart(3, "0");
+        const rdoNumber = String(rdo.rdoNumber).padStart(3, "0");
 
         const occurrenceText = rdo.occurrences > 0
             ? `${rdo.occurrences} ocorrência${rdo.occurrences > 1 ? "s" : ""}`
@@ -137,7 +153,7 @@ function renderRDOList(obra) {
 
             <div class="rdo-row-main">
 
-                <span class="rdo-row-date">${rdo.date}</span>
+                <span class="rdo-row-date">${formatDateShort(rdo.date)}</span>
 
                 <h3 class="rdo-row-title">RDO ${rdoNumber}</h3>
 
@@ -156,11 +172,64 @@ function renderRDOList(obra) {
 
         `;
 
-        row.addEventListener("click", () => openRDO(obra.id, rdo.id));
+        row.addEventListener("click", () => openRDO(obraId, rdo.id));
 
         list.appendChild(row);
 
     });
+
+}
+
+/* ==========================================================
+   AVISO (TOAST)
+========================================================== */
+
+let toastTimeout = null;
+
+function showToast(message) {
+
+    const toast = document.getElementById("obra-toast");
+
+    toast.textContent = message;
+    toast.classList.add("visible");
+
+    clearTimeout(toastTimeout);
+
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove("visible");
+    }, 3000);
+
+}
+
+/* ==========================================================
+   CARREGAR DADOS DO BACKEND
+========================================================== */
+
+async function loadObra(obraId) {
+
+    try {
+
+        const [obra, rdos] = await Promise.all([
+            apiFetch(`/obras/${obraId}`),
+            apiFetch(`/obras/${obraId}/rdos`)
+        ]);
+
+        renderObraHeader(obra);
+        renderObraInfo(obra);
+        renderQuickSummary(rdos);
+        renderRDOList(obraId, rdos);
+
+        setupActions(obra);
+
+    } catch (error) {
+
+        showToast(`Não foi possível carregar a obra: ${error.message}`);
+
+        setTimeout(() => {
+            window.location.href = "home.html";
+        }, 2000);
+
+    }
 
 }
 
@@ -191,29 +260,11 @@ function handleBack() {
 
 }
 
-/* ==========================================================
-   INICIALIZAÇÃO
-========================================================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const obra = getObraFromURL();
-
-    renderObraHeader(obra);
-
-    renderObraInfo(obra);
-
-    renderQuickSummary(obra);
-
-    renderRDOList(obra);
+function setupActions(obra) {
 
     document
         .getElementById("new-rdo-btn")
         .addEventListener("click", () => handleNewRDO(obra.id));
-
-    document
-        .getElementById("obra-back-btn")
-        .addEventListener("click", handleBack);
 
     document
         .getElementById("link-estrutura")
@@ -238,5 +289,26 @@ document.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             window.location.href = `equipamentos.html?id=${obra.id}`;
         });
+
+}
+
+/* ==========================================================
+   INICIALIZAÇÃO
+========================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    requireLogin();
+
+    const obraId = getObraIdFromURL();
+
+    if (!obraId) {
+        window.location.href = "home.html";
+        return;
+    }
+
+    document.getElementById("obra-back-btn").addEventListener("click", handleBack);
+
+    loadObra(obraId);
 
 });

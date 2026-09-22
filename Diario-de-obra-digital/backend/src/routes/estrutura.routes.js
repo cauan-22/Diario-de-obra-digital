@@ -9,7 +9,11 @@ const router = express.Router();
 const estruturaController = require("../controllers/estrutura.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
-router.get("/obras/:obraId/estrutura", estruturaController.listarEstrutura);
+// Todas as rotas agora exigem login — a verificação de que a
+// obra/etapa/subetapa/atividade pertence a quem está logado
+// acontece dentro do controller (precisa checar a árvore toda).
+
+router.get("/obras/:obraId/estrutura", authMiddleware, estruturaController.listarEstrutura);
 
 router.post("/obras/:obraId/etapas", authMiddleware, estruturaController.criarEtapa);
 router.put("/etapas/:id", authMiddleware, estruturaController.atualizarEtapa);

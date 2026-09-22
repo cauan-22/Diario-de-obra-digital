@@ -26,7 +26,6 @@ function authMiddleware(req, res, next) {
 
         const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Deixa o ID do usuário disponível pra rota seguinte usar
         req.userId = payload.userId;
 
         next();

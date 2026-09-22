@@ -8,54 +8,13 @@ function getObraIdFromURL() {
 
     const params = new URLSearchParams(window.location.search);
 
-    return Number(params.get("id")) || 1;
+    return Number(params.get("id"));
 
 }
 
 const obraId = getObraIdFromURL();
 
-let nextEmpresaId = 3;
-let nextFuncionarioTercId = 6;
-
-/* ==========================================================
-   DADOS FICTÍCIOS (futuramente virão do backend)
-   Cada obra tem suas próprias empresas — nunca compartilhadas.
-========================================================== */
-
-const terceirizadosPorObra = {
-
-    1: {
-        obraName: "Casa Jardim",
-        empresas: [
-            {
-                id: 1,
-                name: "Eletrosul",
-                especialidade: "Eletricidade",
-                funcionarios: [
-                    { id: 1, name: "João", funcao: "Eletricista", status: "ativo" },
-                    { id: 2, name: "Marcos", funcao: "Eletricista", status: "ativo" },
-                    { id: 3, name: "Rafael", funcao: "Ajudante", status: "ativo" }
-                ]
-            },
-            {
-                id: 2,
-                name: "Pintura ABC",
-                especialidade: "Pintura",
-                funcionarios: [
-                    { id: 4, name: "Carlos", funcao: "Pintor", status: "ativo" },
-                    { id: 5, name: "Lucas", funcao: "Pintor", status: "inativo" }
-                ]
-            }
-        ]
-    }
-
-};
-
-if (!terceirizadosPorObra[obraId]) {
-    terceirizadosPorObra[obraId] = { obraName: "Obra", empresas: [] };
-}
-
-const terceirizados = terceirizadosPorObra[obraId];
+let empresas = [];
 
 const expandedEmpresas = new Set();
 
@@ -70,9 +29,9 @@ function renderTerceirizados() {
 
     list.innerHTML = "";
 
-    emptyState.hidden = terceirizados.empresas.length > 0;
+    emptyState.hidden = empresas.length > 0;
 
-    terceirizados.empresas.forEach((empresa) => {
+    empresas.forEach((empresa) => {
         list.appendChild(renderEmpresaBlock(empresa));
     });
 
@@ -96,7 +55,7 @@ function renderEmpresaBlock(empresa) {
 
             <div class="empresa-name-block">
                 <div class="empresa-name">${empresa.name}</div>
-                <div class="empresa-especialidade">${empresa.especialidade}</div>
+                <div class="empresa-especialidade">${empresa.especialidade || ""}</div>
             </div>
 
             <div class="tree-row-actions">
@@ -188,11 +147,37 @@ function renderFuncionarioTercRow(empresaId, funcionario) {
 
     `;
 
-    row.querySelector('[data-action="toggle-status"]').addEventListener("click", () => toggleFuncionarioStatus(empresaId, funcionario.id));
-    row.querySelector('[data-action="edit"]').addEventListener("click", () => editFuncionarioTerc(empresaId, funcionario.id));
+    row.querySelector('[data-action="toggle-status"]').addEventListener("click", () => toggleFuncionarioStatus(funcionario.id));
+    row.querySelector('[data-action="edit"]').addEventListener("click", () => editFuncionarioTerc(funcionario.id));
     row.querySelector('[data-action="delete"]').addEventListener("click", () => deleteFuncionarioTerc(empresaId, funcionario.id));
 
     return row;
+
+}
+
+/* ==========================================================
+   CARREGAR DO BACKEND
+========================================================== */
+
+async function loadTerceirizados() {
+
+    try {
+
+        const [obra, lista] = await Promise.all([
+            apiFetch(`/obras/${obraId}`),
+            apiFetch(`/obras/${obraId}/empresas`)
+        ]);
+
+        document.getElementById("obra-name-subtitle").textContent =
+            `${obra.name} — empresas e funcionários vinculados a esta obra.`;
+
+        empresas = lista;
+
+        renderTerceirizados();
+
+    } catch (error) {
+        showToast(`Erro ao carregar empresas: ${error.message}`);
+    }
 
 }
 
@@ -216,7 +201,7 @@ function toggleEmpresa(empresaId) {
    EMPRESAS — CRIAR / EDITAR / EXCLUIR
 ========================================================== */
 
-function addEmpresa() {
+async function addEmpresa() {
 
     const name = prompt("Nome da empresa:");
     if (!name || !name.trim()) return;
@@ -224,45 +209,55 @@ function addEmpresa() {
     const especialidade = prompt("Especialidade (ex: Elétrica, Pintura, Hidráulica):");
     if (!especialidade || !especialidade.trim()) return;
 
-    const newEmpresa = {
-        id: nextEmpresaId++,
-        name: name.trim(),
-        especialidade: especialidade.trim(),
-        funcionarios: []
-    };
+    try {
 
-    terceirizados.empresas.push(newEmpresa);
+        const nova = await apiFetch(`/obras/${obraId}/empresas`, {
+            method: "POST",
+            body: JSON.stringify({ name: name.trim(), especialidade: especialidade.trim() })
+        });
 
-    expandedEmpresas.add(newEmpresa.id);
+        expandedEmpresas.add(nova.id);
 
-    renderTerceirizados();
+        showToast("Empresa cadastrada.");
 
-    showToast("Empresa cadastrada.");
+        await loadTerceirizados();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function editEmpresa(empresaId) {
+async function editEmpresa(empresaId) {
 
-    const empresa = terceirizados.empresas.find((e) => e.id === empresaId);
+    const empresa = empresas.find((e) => e.id === empresaId);
 
     const newName = prompt("Nome da empresa:", empresa.name);
     if (!newName || !newName.trim()) return;
 
-    const newEspecialidade = prompt("Especialidade:", empresa.especialidade);
+    const newEspecialidade = prompt("Especialidade:", empresa.especialidade || "");
     if (!newEspecialidade || !newEspecialidade.trim()) return;
 
-    empresa.name = newName.trim();
-    empresa.especialidade = newEspecialidade.trim();
+    try {
 
-    renderTerceirizados();
+        await apiFetch(`/empresas/${empresaId}`, {
+            method: "PUT",
+            body: JSON.stringify({ name: newName.trim(), especialidade: newEspecialidade.trim() })
+        });
 
-    showToast("Empresa atualizada.");
+        showToast("Empresa atualizada.");
+
+        await loadTerceirizados();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function deleteEmpresa(empresaId) {
+async function deleteEmpresa(empresaId) {
 
-    const empresa = terceirizados.empresas.find((e) => e.id === empresaId);
+    const empresa = empresas.find((e) => e.id === empresaId);
 
     const confirmed = confirm(
         `Excluir a empresa "${empresa.name}"? Todos os funcionários vinculados a ela também serão excluídos.`
@@ -270,11 +265,17 @@ function deleteEmpresa(empresaId) {
 
     if (!confirmed) return;
 
-    terceirizados.empresas = terceirizados.empresas.filter((e) => e.id !== empresaId);
+    try {
 
-    renderTerceirizados();
+        await apiFetch(`/empresas/${empresaId}`, { method: "DELETE" });
 
-    showToast("Empresa excluída.");
+        showToast("Empresa excluída.");
+
+        await loadTerceirizados();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
@@ -282,7 +283,7 @@ function deleteEmpresa(empresaId) {
    FUNCIONÁRIOS TERCEIRIZADOS — CRIAR / EDITAR / EXCLUIR
 ========================================================== */
 
-function addFuncionarioTerc(empresaId) {
+async function addFuncionarioTerc(empresaId) {
 
     const name = prompt("Nome do funcionário:");
     if (!name || !name.trim()) return;
@@ -290,27 +291,42 @@ function addFuncionarioTerc(empresaId) {
     const funcao = prompt("Função (ex: Eletricista, Ajudante):");
     if (!funcao || !funcao.trim()) return;
 
-    const empresa = terceirizados.empresas.find((e) => e.id === empresaId);
+    try {
 
-    empresa.funcionarios.push({
-        id: nextFuncionarioTercId++,
-        name: name.trim(),
-        funcao: funcao.trim(),
-        status: "ativo"
-    });
+        await apiFetch(`/empresas/${empresaId}/funcionarios`, {
+            method: "POST",
+            body: JSON.stringify({ name: name.trim(), funcao: funcao.trim() })
+        });
 
-    expandedEmpresas.add(empresaId);
+        expandedEmpresas.add(empresaId);
 
-    renderTerceirizados();
+        showToast("Funcionário adicionado.");
 
-    showToast("Funcionário adicionado.");
+        await loadTerceirizados();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function editFuncionarioTerc(empresaId, funcId) {
+function findFuncionarioTerc(funcId) {
 
-    const empresa = terceirizados.empresas.find((e) => e.id === empresaId);
-    const funcionario = empresa.funcionarios.find((f) => f.id === funcId);
+    for (const empresa of empresas) {
+
+        const funcionario = empresa.funcionarios.find((f) => f.id === funcId);
+
+        if (funcionario) return funcionario;
+
+    }
+
+    return null;
+
+}
+
+async function editFuncionarioTerc(funcId) {
+
+    const funcionario = findFuncionarioTerc(funcId);
 
     const newName = prompt("Nome:", funcionario.name);
     if (!newName || !newName.trim()) return;
@@ -318,42 +334,65 @@ function editFuncionarioTerc(empresaId, funcId) {
     const newFuncao = prompt("Função:", funcionario.funcao);
     if (!newFuncao || !newFuncao.trim()) return;
 
-    funcionario.name = newName.trim();
-    funcionario.funcao = newFuncao.trim();
+    try {
 
-    renderTerceirizados();
+        await apiFetch(`/funcionarios-terceirizados/${funcId}`, {
+            method: "PUT",
+            body: JSON.stringify({ name: newName.trim(), funcao: newFuncao.trim() })
+        });
 
-    showToast("Funcionário atualizado.");
+        showToast("Funcionário atualizado.");
 
-}
+        await loadTerceirizados();
 
-function toggleFuncionarioStatus(empresaId, funcId) {
-
-    const empresa = terceirizados.empresas.find((e) => e.id === empresaId);
-    const funcionario = empresa.funcionarios.find((f) => f.id === funcId);
-
-    funcionario.status = funcionario.status === "ativo" ? "inativo" : "ativo";
-
-    renderTerceirizados();
-
-    showToast(funcionario.status === "ativo" ? "Funcionário reativado." : "Funcionário marcado como inativo.");
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function deleteFuncionarioTerc(empresaId, funcId) {
+async function toggleFuncionarioStatus(funcId) {
 
-    const empresa = terceirizados.empresas.find((e) => e.id === empresaId);
-    const funcionario = empresa.funcionarios.find((f) => f.id === funcId);
+    const funcionario = findFuncionarioTerc(funcId);
 
-    const confirmed = confirm(`Excluir "${funcionario.name}" da empresa "${empresa.name}"?`);
+    const novoStatus = funcionario.status === "ativo" ? "inativo" : "ativo";
+
+    try {
+
+        await apiFetch(`/funcionarios-terceirizados/${funcId}`, {
+            method: "PUT",
+            body: JSON.stringify({ status: novoStatus })
+        });
+
+        showToast(novoStatus === "ativo" ? "Funcionário reativado." : "Funcionário marcado como inativo.");
+
+        await loadTerceirizados();
+
+    } catch (error) {
+        showToast(error.message);
+    }
+
+}
+
+async function deleteFuncionarioTerc(empresaId, funcId) {
+
+    const funcionario = findFuncionarioTerc(funcId);
+
+    const confirmed = confirm(`Excluir "${funcionario.name}"?`);
 
     if (!confirmed) return;
 
-    empresa.funcionarios = empresa.funcionarios.filter((f) => f.id !== funcId);
+    try {
 
-    renderTerceirizados();
+        await apiFetch(`/funcionarios-terceirizados/${funcId}`, { method: "DELETE" });
 
-    showToast("Funcionário excluído.");
+        showToast("Funcionário excluído.");
+
+        await loadTerceirizados();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
@@ -384,10 +423,9 @@ function showToast(message) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    document.getElementById("obra-name-subtitle").textContent =
-        `${terceirizados.obraName} — empresas e funcionários vinculados a esta obra.`;
+    requireLogin();
 
-    renderTerceirizados();
+    loadTerceirizados();
 
     document.getElementById("add-empresa-btn").addEventListener("click", addEmpresa);
 

@@ -8,37 +8,13 @@ function getObraIdFromURL() {
 
     const params = new URLSearchParams(window.location.search);
 
-    return Number(params.get("id")) || 1;
+    return Number(params.get("id"));
 
 }
 
 const obraId = getObraIdFromURL();
 
-let nextFuncionarioId = 4;
-
-/* ==========================================================
-   DADOS FICTÍCIOS (futuramente virão do backend)
-   Cada obra tem sua própria equipe — nunca compartilhada.
-========================================================== */
-
-const equipesPorObra = {
-
-    1: {
-        obraName: "Casa Jardim",
-        funcionarios: [
-            { id: 1, name: "Carlos Mendes", funcao: "Pedreiro", matricula: "0012", status: "ativo", observacao: "" },
-            { id: 2, name: "João Silva", funcao: "Mestre de Obra", matricula: "0003", status: "ativo", observacao: "" },
-            { id: 3, name: "Pedro Santos", funcao: "Servente", matricula: "", status: "inativo", observacao: "Afastado desde 10/08." }
-        ]
-    }
-
-};
-
-if (!equipesPorObra[obraId]) {
-    equipesPorObra[obraId] = { obraName: "Obra", funcionarios: [] };
-}
-
-const equipe = equipesPorObra[obraId];
+let funcionarios = [];
 
 /* ==========================================================
    RENDERIZAÇÃO
@@ -51,9 +27,9 @@ function renderEquipe() {
 
     list.innerHTML = "";
 
-    emptyState.hidden = equipe.funcionarios.length > 0;
+    emptyState.hidden = funcionarios.length > 0;
 
-    equipe.funcionarios.forEach((funcionario) => {
+    funcionarios.forEach((funcionario) => {
 
         const row = document.createElement("div");
 
@@ -118,10 +94,36 @@ function renderEquipe() {
 }
 
 /* ==========================================================
+   CARREGAR DO BACKEND
+========================================================== */
+
+async function loadEquipe() {
+
+    try {
+
+        const [obra, lista] = await Promise.all([
+            apiFetch(`/obras/${obraId}`),
+            apiFetch(`/obras/${obraId}/funcionarios`)
+        ]);
+
+        document.getElementById("obra-name-subtitle").textContent =
+            `${obra.name} — funcionários próprios cadastrados nesta obra.`;
+
+        funcionarios = lista;
+
+        renderEquipe();
+
+    } catch (error) {
+        showToast(`Erro ao carregar a equipe: ${error.message}`);
+    }
+
+}
+
+/* ==========================================================
    CRIAR / EDITAR / EXCLUIR / ALTERNAR STATUS
 ========================================================== */
 
-function addFuncionario() {
+async function addFuncionario() {
 
     const name = prompt("Nome do funcionário:");
     if (!name || !name.trim()) return;
@@ -132,24 +134,31 @@ function addFuncionario() {
     const matricula = prompt("Matrícula ou código interno (opcional):") || "";
     const observacao = prompt("Observação (opcional):") || "";
 
-    equipe.funcionarios.push({
-        id: nextFuncionarioId++,
-        name: name.trim(),
-        funcao: funcao.trim(),
-        matricula: matricula.trim(),
-        status: "ativo",
-        observacao: observacao.trim()
-    });
+    try {
 
-    renderEquipe();
+        await apiFetch(`/obras/${obraId}/funcionarios`, {
+            method: "POST",
+            body: JSON.stringify({
+                name: name.trim(),
+                funcao: funcao.trim(),
+                matricula: matricula.trim(),
+                observacao: observacao.trim()
+            })
+        });
 
-    showToast("Funcionário cadastrado.");
+        showToast("Funcionário cadastrado.");
+
+        await loadEquipe();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function editFuncionario(id) {
+async function editFuncionario(id) {
 
-    const funcionario = equipe.funcionarios.find((f) => f.id === id);
+    const funcionario = funcionarios.find((f) => f.id === id);
 
     const newName = prompt("Nome:", funcionario.name);
     if (!newName || !newName.trim()) return;
@@ -157,45 +166,73 @@ function editFuncionario(id) {
     const newFuncao = prompt("Função:", funcionario.funcao);
     if (!newFuncao || !newFuncao.trim()) return;
 
-    const newMatricula = prompt("Matrícula ou código interno (opcional):", funcionario.matricula);
-    const newObservacao = prompt("Observação (opcional):", funcionario.observacao);
+    const newMatricula = prompt("Matrícula ou código interno (opcional):", funcionario.matricula || "");
+    const newObservacao = prompt("Observação (opcional):", funcionario.observacao || "");
 
-    funcionario.name = newName.trim();
-    funcionario.funcao = newFuncao.trim();
-    funcionario.matricula = (newMatricula || "").trim();
-    funcionario.observacao = (newObservacao || "").trim();
+    try {
 
-    renderEquipe();
+        await apiFetch(`/funcionarios/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                name: newName.trim(),
+                funcao: newFuncao.trim(),
+                matricula: (newMatricula || "").trim(),
+                observacao: (newObservacao || "").trim()
+            })
+        });
 
-    showToast("Funcionário atualizado.");
+        showToast("Funcionário atualizado.");
+
+        await loadEquipe();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function toggleStatus(id) {
+async function toggleStatus(id) {
 
-    const funcionario = equipe.funcionarios.find((f) => f.id === id);
+    const funcionario = funcionarios.find((f) => f.id === id);
 
-    funcionario.status = funcionario.status === "ativo" ? "inativo" : "ativo";
+    const novoStatus = funcionario.status === "ativo" ? "inativo" : "ativo";
 
-    renderEquipe();
+    try {
 
-    showToast(funcionario.status === "ativo" ? "Funcionário reativado." : "Funcionário marcado como inativo.");
+        await apiFetch(`/funcionarios/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({ status: novoStatus })
+        });
+
+        showToast(novoStatus === "ativo" ? "Funcionário reativado." : "Funcionário marcado como inativo.");
+
+        await loadEquipe();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function deleteFuncionario(id) {
+async function deleteFuncionario(id) {
 
-    const funcionario = equipe.funcionarios.find((f) => f.id === id);
+    const funcionario = funcionarios.find((f) => f.id === id);
 
     const confirmed = confirm(`Excluir "${funcionario.name}" da equipe da obra?`);
 
     if (!confirmed) return;
 
-    equipe.funcionarios = equipe.funcionarios.filter((f) => f.id !== id);
+    try {
 
-    renderEquipe();
+        await apiFetch(`/funcionarios/${id}`, { method: "DELETE" });
 
-    showToast("Funcionário excluído.");
+        showToast("Funcionário excluído.");
+
+        await loadEquipe();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
@@ -226,10 +263,9 @@ function showToast(message) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    document.getElementById("obra-name-subtitle").textContent =
-        `${equipe.obraName} — funcionários próprios cadastrados nesta obra.`;
+    requireLogin();
 
-    renderEquipe();
+    loadEquipe();
 
     document.getElementById("add-funcionario-btn").addEventListener("click", addFuncionario);
 

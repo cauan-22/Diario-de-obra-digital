@@ -4,90 +4,50 @@
    Descrição: Lógica da página Estrutura da Obra (EAP)
 ========================================================== */
 
-/* ==========================================================
-   CONTEXTO DA OBRA
-========================================================== */
-
 function getObraIdFromURL() {
 
     const params = new URLSearchParams(window.location.search);
 
-    return Number(params.get("id")) || 1;
+    return Number(params.get("id"));
 
 }
 
 const obraId = getObraIdFromURL();
 
-/* ==========================================================
-   DADOS FICTÍCIOS (futuramente virão do backend)
-   Cada obra tem sua própria estrutura — nunca compartilhada.
-   Chave: obraId.
-========================================================== */
-
-let nextEtapaId = 3;
-let nextSubetapaId = 3;
-let nextAtividadeId = 7;
-
-const estruturasPorObra = {
-
-    1: {
-        obraName: "Casa Jardim",
-        etapas: [
-            {
-                id: 1,
-                name: "Estruturas",
-                prazoDias: 25,
-                subetapas: [
-                    {
-                        id: 1,
-                        name: "Vigas e Lajes",
-                        atividades: [
-                            { id: 1, name: "Execução de formas", prazoDias: 8, quantidadeTotal: 120, unidade: "m²", finalizada: false },
-                            { id: 2, name: "Montagem de armaduras", prazoDias: 5, quantidadeTotal: null, unidade: null, finalizada: false },
-                            { id: 3, name: "Concretagem", prazoDias: null, quantidadeTotal: null, unidade: null, finalizada: false }
-                        ]
-                    },
-                    {
-                        id: 2,
-                        name: "Fundações",
-                        atividades: [
-                            { id: 4, name: "Escavação", prazoDias: null, quantidadeTotal: null, unidade: null, finalizada: true },
-                            { id: 5, name: "Montagem de armaduras", prazoDias: null, quantidadeTotal: null, unidade: null, finalizada: false },
-                            { id: 6, name: "Concretagem", prazoDias: null, quantidadeTotal: null, unidade: null, finalizada: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: "Alvenaria",
-                prazoDias: null,
-                subetapas: []
-            }
-        ]
-    }
-
-};
-
-/* Se a obra ainda não tem estrutura cadastrada, começa vazia */
-
-if (!estruturasPorObra[obraId]) {
-    estruturasPorObra[obraId] = { obraName: "Obra", etapas: [] };
-}
-
-const estrutura = estruturasPorObra[obraId];
-
-/* ==========================================================
-   ESTADO DE EXPANSÃO (o que está aberto/fechado na árvore)
-========================================================== */
+let estrutura = { obraName: "", etapas: [] };
 
 const expandedEtapas = new Set();
 const expandedSubetapas = new Set();
 
 /* ==========================================================
+   CARREGAR DO BACKEND
+========================================================== */
+
+async function loadEstrutura() {
+
+    try {
+
+        const [obra, etapas] = await Promise.all([
+            apiFetch(`/obras/${obraId}`),
+            apiFetch(`/obras/${obraId}/estrutura`)
+        ]);
+
+        estrutura.obraName = obra.name;
+        estrutura.etapas = etapas;
+
+        document.getElementById("obra-name-subtitle").textContent =
+            `${obra.name} — organize etapas, subetapas e atividades.`;
+
+        renderEstrutura();
+
+    } catch (error) {
+        showToast(`Erro ao carregar a estrutura: ${error.message}`);
+    }
+
+}
+
+/* ==========================================================
    RECALCULAR CÓDIGOS (01, 01.1, 01.2...)
-   Sempre calculado na hora de exibir — assim nunca fica com
-   "buraco" na numeração depois de excluir algo do meio.
 ========================================================== */
 
 function recomputeCodes() {
@@ -120,9 +80,7 @@ function renderEstrutura() {
     emptyState.hidden = estrutura.etapas.length > 0;
 
     estrutura.etapas.forEach((etapa) => {
-
         list.appendChild(renderEtapaBlock(etapa));
-
     });
 
 }
@@ -146,7 +104,7 @@ function renderEtapaBlock(etapa) {
             <span class="etapa-code">${etapa.displayCode}</span>
             <span class="etapa-name">${etapa.name}</span>
 
-            ${etapa.prazoDias ? `<span class="tree-prazo-badge">${etapa.prazoDias} dias</span>` : ""}
+            ${etapa.prazo_dias ? `<span class="tree-prazo-badge">${etapa.prazo_dias} dias</span>` : ""}
 
             <div class="tree-row-actions">
 
@@ -269,12 +227,12 @@ function renderAtividadeBadges(atividade) {
         badges.push(`<span class="tree-status-badge tree-status-badge--done">Concluída</span>`);
     }
 
-    if (atividade.prazoDias) {
-        badges.push(`<span class="tree-prazo-badge">${atividade.prazoDias} dias</span>`);
+    if (atividade.prazo_dias) {
+        badges.push(`<span class="tree-prazo-badge">${atividade.prazo_dias} dias</span>`);
     }
 
-    if (atividade.quantidadeTotal) {
-        badges.push(`<span class="tree-prazo-badge">${atividade.quantidadeTotal} ${atividade.unidade}</span>`);
+    if (atividade.quantidade_total) {
+        badges.push(`<span class="tree-prazo-badge">${atividade.quantidade_total} ${atividade.unidade}</span>`);
     }
 
     return badges.join("");
@@ -318,9 +276,9 @@ function renderAtividadeRow(etapaId, subId, atividade) {
 
     `;
 
-    row.querySelector('[data-action="toggle-finalizada"]').addEventListener("click", () => toggleFinalizada(etapaId, subId, atividade.id));
+    row.querySelector('[data-action="toggle-finalizada"]').addEventListener("click", () => toggleFinalizada(atividade.id));
     row.querySelector('[data-action="edit-atv"]').addEventListener("click", () => editAtividade(etapaId, subId, atividade.id));
-    row.querySelector('[data-action="delete-atv"]').addEventListener("click", () => deleteAtividade(etapaId, subId, atividade.id));
+    row.querySelector('[data-action="delete-atv"]').addEventListener("click", () => deleteAtividade(atividade.id));
 
     return row;
 
@@ -355,9 +313,7 @@ function toggleSubetapa(subId) {
 }
 
 /* ==========================================================
-   PRAZO ESTIMADO (opcional, em dias)
-   Se o usuário cancelar o prompt, mantém o valor atual.
-   Se confirmar vazio, remove o prazo (null).
+   PRAZO E QUANTIDADE (opcionais)
 ========================================================== */
 
 function promptPrazoDias(currentValue) {
@@ -380,12 +336,6 @@ function promptPrazoDias(currentValue) {
     return Math.round(number);
 
 }
-
-/* ==========================================================
-   QUANTIDADE TOTAL (opcional) — ex: "120 m²"
-   Mesma lógica do prazo: cancelar mantém o valor atual,
-   confirmar vazio remove a quantidade.
-========================================================== */
 
 function promptQuantidade(currentTotal, currentUnidade) {
 
@@ -422,44 +372,59 @@ function promptQuantidade(currentTotal, currentUnidade) {
    ETAPAS — CRIAR / EDITAR / EXCLUIR
 ========================================================== */
 
-function addEtapa() {
+async function addEtapa() {
 
     const name = prompt("Nome da nova etapa:");
-
     if (!name || !name.trim()) return;
 
     const prazoDias = promptPrazoDias(null);
 
-    const newEtapa = { id: nextEtapaId++, name: name.trim(), prazoDias, subetapas: [] };
+    try {
 
-    estrutura.etapas.push(newEtapa);
+        const nova = await apiFetch(`/obras/${obraId}/etapas`, {
+            method: "POST",
+            body: JSON.stringify({ name: name.trim(), prazoDias })
+        });
 
-    expandedEtapas.add(newEtapa.id);
+        expandedEtapas.add(nova.id);
 
-    renderEstrutura();
+        showToast("Etapa adicionada.");
 
-    showToast("Etapa adicionada.");
+        await loadEstrutura();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function editEtapa(etapaId) {
+async function editEtapa(etapaId) {
 
     const etapa = estrutura.etapas.find((e) => e.id === etapaId);
 
     const newName = prompt("Renomear etapa:", etapa.name);
-
     if (!newName || !newName.trim()) return;
 
-    etapa.name = newName.trim();
-    etapa.prazoDias = promptPrazoDias(etapa.prazoDias);
+    const prazoDias = promptPrazoDias(etapa.prazo_dias);
 
-    renderEstrutura();
+    try {
 
-    showToast("Etapa atualizada.");
+        await apiFetch(`/etapas/${etapaId}`, {
+            method: "PUT",
+            body: JSON.stringify({ name: newName.trim(), prazoDias })
+        });
+
+        showToast("Etapa atualizada.");
+
+        await loadEstrutura();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function deleteEtapa(etapaId) {
+async function deleteEtapa(etapaId) {
 
     const etapa = estrutura.etapas.find((e) => e.id === etapaId);
 
@@ -469,11 +434,17 @@ function deleteEtapa(etapaId) {
 
     if (!confirmed) return;
 
-    estrutura.etapas = estrutura.etapas.filter((e) => e.id !== etapaId);
+    try {
 
-    renderEstrutura();
+        await apiFetch(`/etapas/${etapaId}`, { method: "DELETE" });
 
-    showToast("Etapa excluída.");
+        showToast("Etapa excluída.");
+
+        await loadEstrutura();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
@@ -481,45 +452,57 @@ function deleteEtapa(etapaId) {
    SUBETAPAS — CRIAR / EDITAR / EXCLUIR
 ========================================================== */
 
-function addSubetapa(etapaId) {
+async function addSubetapa(etapaId) {
 
     const name = prompt("Nome da nova subetapa:");
-
     if (!name || !name.trim()) return;
 
-    const etapa = estrutura.etapas.find((e) => e.id === etapaId);
+    try {
 
-    const newSub = { id: nextSubetapaId++, name: name.trim(), atividades: [] };
+        const nova = await apiFetch(`/etapas/${etapaId}/subetapas`, {
+            method: "POST",
+            body: JSON.stringify({ name: name.trim() })
+        });
 
-    etapa.subetapas.push(newSub);
+        expandedEtapas.add(etapaId);
+        expandedSubetapas.add(nova.id);
 
-    expandedEtapas.add(etapaId);
-    expandedSubetapas.add(newSub.id);
+        showToast("Subetapa adicionada.");
 
-    renderEstrutura();
+        await loadEstrutura();
 
-    showToast("Subetapa adicionada.");
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function editSubetapa(etapaId, subId) {
+async function editSubetapa(etapaId, subId) {
 
     const etapa = estrutura.etapas.find((e) => e.id === etapaId);
     const sub = etapa.subetapas.find((s) => s.id === subId);
 
     const newName = prompt("Renomear subetapa:", sub.name);
-
     if (!newName || !newName.trim()) return;
 
-    sub.name = newName.trim();
+    try {
 
-    renderEstrutura();
+        await apiFetch(`/subetapas/${subId}`, {
+            method: "PUT",
+            body: JSON.stringify({ name: newName.trim() })
+        });
 
-    showToast("Subetapa atualizada.");
+        showToast("Subetapa atualizada.");
+
+        await loadEstrutura();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function deleteSubetapa(etapaId, subId) {
+async function deleteSubetapa(etapaId, subId) {
 
     const etapa = estrutura.etapas.find((e) => e.id === etapaId);
     const sub = etapa.subetapas.find((s) => s.id === subId);
@@ -530,101 +513,128 @@ function deleteSubetapa(etapaId, subId) {
 
     if (!confirmed) return;
 
-    etapa.subetapas = etapa.subetapas.filter((s) => s.id !== subId);
+    try {
 
-    renderEstrutura();
+        await apiFetch(`/subetapas/${subId}`, { method: "DELETE" });
 
-    showToast("Subetapa excluída.");
+        showToast("Subetapa excluída.");
+
+        await loadEstrutura();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
 /* ==========================================================
-   ATIVIDADES — CRIAR / EDITAR / EXCLUIR
+   ATIVIDADES — CRIAR / EDITAR / EXCLUIR / FINALIZAR
 ========================================================== */
 
-function addAtividade(etapaId, subId) {
+async function addAtividade(etapaId, subId) {
 
     const name = prompt("Nome da nova atividade:");
-
     if (!name || !name.trim()) return;
 
     const prazoDias = promptPrazoDias(null);
     const { quantidadeTotal, unidade } = promptQuantidade(null, null);
 
-    const etapa = estrutura.etapas.find((e) => e.id === etapaId);
-    const sub = etapa.subetapas.find((s) => s.id === subId);
+    try {
 
-    sub.atividades.push({
-        id: nextAtividadeId++,
-        name: name.trim(),
-        prazoDias,
-        quantidadeTotal,
-        unidade,
-        finalizada: false
-    });
+        await apiFetch(`/subetapas/${subId}/atividades`, {
+            method: "POST",
+            body: JSON.stringify({ name: name.trim(), prazoDias, quantidadeTotal, unidade })
+        });
 
-    expandedEtapas.add(etapaId);
-    expandedSubetapas.add(subId);
+        expandedEtapas.add(etapaId);
+        expandedSubetapas.add(subId);
 
-    renderEstrutura();
+        showToast("Atividade adicionada.");
 
-    showToast("Atividade adicionada.");
+        await loadEstrutura();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function editAtividade(etapaId, subId, atvId) {
+async function editAtividade(etapaId, subId, atvId) {
 
     const etapa = estrutura.etapas.find((e) => e.id === etapaId);
     const sub = etapa.subetapas.find((s) => s.id === subId);
     const atividade = sub.atividades.find((a) => a.id === atvId);
 
     const newName = prompt("Renomear atividade:", atividade.name);
-
     if (!newName || !newName.trim()) return;
 
-    atividade.name = newName.trim();
-    atividade.prazoDias = promptPrazoDias(atividade.prazoDias);
+    const prazoDias = promptPrazoDias(atividade.prazo_dias);
+    const { quantidadeTotal, unidade } = promptQuantidade(atividade.quantidade_total, atividade.unidade);
 
-    const quantidade = promptQuantidade(atividade.quantidadeTotal, atividade.unidade);
-    atividade.quantidadeTotal = quantidade.quantidadeTotal;
-    atividade.unidade = quantidade.unidade;
+    try {
 
-    renderEstrutura();
+        await apiFetch(`/atividades/${atvId}`, {
+            method: "PUT",
+            body: JSON.stringify({ name: newName.trim(), prazoDias, quantidadeTotal, unidade })
+        });
 
-    showToast("Atividade atualizada.");
+        showToast("Atividade atualizada.");
 
-}
+        await loadEstrutura();
 
-function toggleFinalizada(etapaId, subId, atvId) {
-
-    const etapa = estrutura.etapas.find((e) => e.id === etapaId);
-    const sub = etapa.subetapas.find((s) => s.id === subId);
-    const atividade = sub.atividades.find((a) => a.id === atvId);
-
-    atividade.finalizada = !atividade.finalizada;
-
-    renderEstrutura();
-
-    showToast(atividade.finalizada
-        ? "Atividade marcada como concluída."
-        : "Atividade reaberta.");
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function deleteAtividade(etapaId, subId, atvId) {
+async function toggleFinalizada(atvId) {
 
-    const etapa = estrutura.etapas.find((e) => e.id === etapaId);
-    const sub = etapa.subetapas.find((s) => s.id === subId);
+    let atividadeAtual = null;
+
+    for (const etapa of estrutura.etapas) {
+        for (const sub of etapa.subetapas) {
+            const found = sub.atividades.find((a) => a.id === atvId);
+            if (found) atividadeAtual = found;
+        }
+    }
+
+    const novoValor = !atividadeAtual.finalizada;
+
+    try {
+
+        await apiFetch(`/atividades/${atvId}`, {
+            method: "PUT",
+            body: JSON.stringify({ finalizada: novoValor })
+        });
+
+        showToast(novoValor ? "Atividade marcada como concluída." : "Atividade reaberta.");
+
+        await loadEstrutura();
+
+    } catch (error) {
+        showToast(error.message);
+    }
+
+}
+
+async function deleteAtividade(atvId) {
 
     const confirmed = confirm("Excluir esta atividade?");
 
     if (!confirmed) return;
 
-    sub.atividades = sub.atividades.filter((a) => a.id !== atvId);
+    try {
 
-    renderEstrutura();
+        await apiFetch(`/atividades/${atvId}`, { method: "DELETE" });
 
-    showToast("Atividade excluída.");
+        showToast("Atividade excluída.");
+
+        await loadEstrutura();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
@@ -655,10 +665,9 @@ function showToast(message) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    document.getElementById("obra-name-subtitle").textContent =
-        `${estrutura.obraName} — organize etapas, subetapas e atividades.`;
+    requireLogin();
 
-    renderEstrutura();
+    loadEstrutura();
 
     document.getElementById("add-etapa-btn").addEventListener("click", addEtapa);
 

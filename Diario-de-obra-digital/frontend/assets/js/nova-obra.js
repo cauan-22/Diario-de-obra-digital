@@ -148,8 +148,6 @@ function showToast(message) {
 function buildObraFromForm() {
 
     return {
-        // Futuramente o backend gera o ID de verdade.
-        id: Date.now(),
         name: document.getElementById("obra-name-input").value.trim(),
         client: document.getElementById("obra-client-input").value.trim(),
         contract: document.getElementById("obra-contract-input").value.trim(),
@@ -175,7 +173,7 @@ function buildObraFromForm() {
 
 }
 
-function handleSubmit() {
+async function handleSubmit() {
 
     const firstInvalidInput = validateForm();
 
@@ -188,15 +186,32 @@ function handleSubmit() {
 
     const newObra = buildObraFromForm();
 
-    // Futuramente: enviar newObra para o backend (POST /obras).
-    console.log("Obra criada:", newObra);
+    const submitBtn = document.getElementById("submit-btn");
 
-    showToast("Obra criada com sucesso.");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Criando...";
 
-    // Pequeno atraso para o usuário ver o aviso antes de navegar.
-    setTimeout(() => {
-        window.location.href = `obra.html?id=${newObra.id}`;
-    }, 900);
+    try {
+
+        const obraCriada = await apiFetch("/obras", {
+            method: "POST",
+            body: JSON.stringify(newObra)
+        });
+
+        showToast("Obra criada com sucesso.");
+
+        setTimeout(() => {
+            window.location.href = `obra.html?id=${obraCriada.id}`;
+        }, 900);
+
+    } catch (error) {
+
+        showToast(error.message);
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Criar obra";
+
+    }
 
 }
 
@@ -211,6 +226,8 @@ function handleCancel() {
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    requireLogin();
 
     setupChipGroup("status-group", (value) => { selectedStatus = value; });
 

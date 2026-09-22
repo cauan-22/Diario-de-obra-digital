@@ -8,41 +8,13 @@ function getObraIdFromURL() {
 
     const params = new URLSearchParams(window.location.search);
 
-    return Number(params.get("id")) || 1;
+    return Number(params.get("id"));
 
 }
 
 const obraId = getObraIdFromURL();
 
-let nextEquipamentoId = 4;
-
-/* ==========================================================
-   DADOS FICTÍCIOS (futuramente virão do backend)
-   Cada obra tem seus próprios equipamentos — nunca compartilhados.
-
-   O "status" aqui é se o equipamento está ativo no cadastro da
-   obra (ativo/inativo) — diferente do status "operando/parado"
-   que é preenchido dia a dia dentro do RDO.
-========================================================== */
-
-const equipamentosPorObra = {
-
-    1: {
-        obraName: "Casa Jardim",
-        equipamentos: [
-            { id: 1, name: "Betoneira 01", tipo: "Betoneira", identificacao: "EQ-001", status: "ativo", observacao: "" },
-            { id: 2, name: "Mini Escavadeira", tipo: "Escavadeira", identificacao: "EQ-002", status: "ativo", observacao: "" },
-            { id: 3, name: "Andaime 03", tipo: "Andaime", identificacao: "EQ-003", status: "inativo", observacao: "Aguardando montagem." }
-        ]
-    }
-
-};
-
-if (!equipamentosPorObra[obraId]) {
-    equipamentosPorObra[obraId] = { obraName: "Obra", equipamentos: [] };
-}
-
-const equipamentos = equipamentosPorObra[obraId];
+let equipamentos = [];
 
 /* ==========================================================
    RENDERIZAÇÃO
@@ -55,9 +27,9 @@ function renderEquipamentos() {
 
     list.innerHTML = "";
 
-    emptyState.hidden = equipamentos.equipamentos.length > 0;
+    emptyState.hidden = equipamentos.length > 0;
 
-    equipamentos.equipamentos.forEach((equipamento) => {
+    equipamentos.forEach((equipamento) => {
 
         const row = document.createElement("div");
 
@@ -76,7 +48,7 @@ function renderEquipamentos() {
             <div class="simple-list-row-main">
 
                 <div class="simple-list-row-name">${equipamento.name}</div>
-                <div class="simple-list-row-sub">${equipamento.tipo}</div>
+                <div class="simple-list-row-sub">${equipamento.tipo || ""}</div>
 
                 ${equipamento.observacao ? `<div class="simple-list-row-sub">${equipamento.observacao}</div>` : ""}
 
@@ -122,10 +94,36 @@ function renderEquipamentos() {
 }
 
 /* ==========================================================
+   CARREGAR DO BACKEND
+========================================================== */
+
+async function loadEquipamentos() {
+
+    try {
+
+        const [obra, lista] = await Promise.all([
+            apiFetch(`/obras/${obraId}`),
+            apiFetch(`/obras/${obraId}/equipamentos`)
+        ]);
+
+        document.getElementById("obra-name-subtitle").textContent =
+            `${obra.name} — equipamentos cadastrados nesta obra.`;
+
+        equipamentos = lista;
+
+        renderEquipamentos();
+
+    } catch (error) {
+        showToast(`Erro ao carregar equipamentos: ${error.message}`);
+    }
+
+}
+
+/* ==========================================================
    CRIAR / EDITAR / EXCLUIR / ALTERNAR STATUS
 ========================================================== */
 
-function addEquipamento() {
+async function addEquipamento() {
 
     const name = prompt("Nome do equipamento (ex: Betoneira 01):");
     if (!name || !name.trim()) return;
@@ -136,70 +134,105 @@ function addEquipamento() {
     const identificacao = prompt("Identificação ou código interno (opcional):") || "";
     const observacao = prompt("Observação (opcional):") || "";
 
-    equipamentos.equipamentos.push({
-        id: nextEquipamentoId++,
-        name: name.trim(),
-        tipo: tipo.trim(),
-        identificacao: identificacao.trim(),
-        status: "ativo",
-        observacao: observacao.trim()
-    });
+    try {
 
-    renderEquipamentos();
+        await apiFetch(`/obras/${obraId}/equipamentos`, {
+            method: "POST",
+            body: JSON.stringify({
+                name: name.trim(),
+                tipo: tipo.trim(),
+                identificacao: identificacao.trim(),
+                observacao: observacao.trim()
+            })
+        });
 
-    showToast("Equipamento cadastrado.");
+        showToast("Equipamento cadastrado.");
+
+        await loadEquipamentos();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function editEquipamento(id) {
+async function editEquipamento(id) {
 
-    const equipamento = equipamentos.equipamentos.find((e) => e.id === id);
+    const equipamento = equipamentos.find((e) => e.id === id);
 
     const newName = prompt("Nome:", equipamento.name);
     if (!newName || !newName.trim()) return;
 
-    const newTipo = prompt("Tipo:", equipamento.tipo);
+    const newTipo = prompt("Tipo:", equipamento.tipo || "");
     if (!newTipo || !newTipo.trim()) return;
 
-    const newIdentificacao = prompt("Identificação ou código interno (opcional):", equipamento.identificacao);
-    const newObservacao = prompt("Observação (opcional):", equipamento.observacao);
+    const newIdentificacao = prompt("Identificação ou código interno (opcional):", equipamento.identificacao || "");
+    const newObservacao = prompt("Observação (opcional):", equipamento.observacao || "");
 
-    equipamento.name = newName.trim();
-    equipamento.tipo = newTipo.trim();
-    equipamento.identificacao = (newIdentificacao || "").trim();
-    equipamento.observacao = (newObservacao || "").trim();
+    try {
 
-    renderEquipamentos();
+        await apiFetch(`/equipamentos/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                name: newName.trim(),
+                tipo: newTipo.trim(),
+                identificacao: (newIdentificacao || "").trim(),
+                observacao: (newObservacao || "").trim()
+            })
+        });
 
-    showToast("Equipamento atualizado.");
+        showToast("Equipamento atualizado.");
+
+        await loadEquipamentos();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function toggleStatus(id) {
+async function toggleStatus(id) {
 
-    const equipamento = equipamentos.equipamentos.find((e) => e.id === id);
+    const equipamento = equipamentos.find((e) => e.id === id);
 
-    equipamento.status = equipamento.status === "ativo" ? "inativo" : "ativo";
+    const novoStatus = equipamento.status === "ativo" ? "inativo" : "ativo";
 
-    renderEquipamentos();
+    try {
 
-    showToast(equipamento.status === "ativo" ? "Equipamento reativado." : "Equipamento marcado como inativo.");
+        await apiFetch(`/equipamentos/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({ status: novoStatus })
+        });
+
+        showToast(novoStatus === "ativo" ? "Equipamento reativado." : "Equipamento marcado como inativo.");
+
+        await loadEquipamentos();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
-function deleteEquipamento(id) {
+async function deleteEquipamento(id) {
 
-    const equipamento = equipamentos.equipamentos.find((e) => e.id === id);
+    const equipamento = equipamentos.find((e) => e.id === id);
 
     const confirmed = confirm(`Excluir "${equipamento.name}" desta obra?`);
 
     if (!confirmed) return;
 
-    equipamentos.equipamentos = equipamentos.equipamentos.filter((e) => e.id !== id);
+    try {
 
-    renderEquipamentos();
+        await apiFetch(`/equipamentos/${id}`, { method: "DELETE" });
 
-    showToast("Equipamento excluído.");
+        showToast("Equipamento excluído.");
+
+        await loadEquipamentos();
+
+    } catch (error) {
+        showToast(error.message);
+    }
 
 }
 
@@ -230,10 +263,9 @@ function showToast(message) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    document.getElementById("obra-name-subtitle").textContent =
-        `${equipamentos.obraName} — equipamentos cadastrados nesta obra.`;
+    requireLogin();
 
-    renderEquipamentos();
+    loadEquipamentos();
 
     document.getElementById("add-equipamento-btn").addEventListener("click", addEquipamento);
 

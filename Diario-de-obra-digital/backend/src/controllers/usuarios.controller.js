@@ -39,7 +39,6 @@ async function cadastrar(req, res) {
             return res.status(409).json({ error: "Já existe uma conta com esse e-mail." });
         }
 
-        // Nunca guardamos a senha em texto puro — só o hash.
         const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
         const result = await pool.query(

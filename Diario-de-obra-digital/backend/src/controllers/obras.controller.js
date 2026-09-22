@@ -13,8 +13,16 @@ async function listar(req, res) {
 
     try {
 
+        // Antes: trazia TODAS as obras do banco, de qualquer usuário.
+        // Agora: só as obras que pertencem a quem está logado.
         const result = await pool.query(
-            "SELECT * FROM obras ORDER BY created_at DESC"
+            `SELECT obras.*,
+                (SELECT MAX(date) FROM rdos WHERE rdos.obra_id = obras.id) AS last_rdo_date,
+                (SELECT COUNT(*) FROM rdos WHERE rdos.obra_id = obras.id) AS rdo_count
+             FROM obras
+             WHERE owner_user_id = $1
+             ORDER BY obras.created_at DESC`,
+            [req.userId]
         );
 
         res.json(result.rows);

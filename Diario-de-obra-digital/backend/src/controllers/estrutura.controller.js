@@ -3,13 +3,23 @@
    Arquivo: estrutura.controller.js
    Descrição: CRUD de Etapas, Subetapas e Atividades cadastradas
    (a "ficha técnica" da obra, separada dos RDOs do dia a dia).
+
+   IMPORTANTE: toda função aqui confere se o registro realmente
+   pertence a uma obra do usuário logado (req.userId), subindo
+   a árvore quando necessário (atividade -> subetapa -> etapa
+   -> obra). Sem isso, alguém poderia editar/excluir a estrutura
+   de uma obra de outra pessoa só sabendo o ID.
 ========================================================== */
 
 const pool = require("../db");
+const {
+    getObraIdDaEtapa,
+    getObraIdDaSubetapa,
+    obraPertenceAoUsuario
+} = require("../utils/obraOwnership");
 
 /* ==========================================================
    GET /obras/:obraId/estrutura
-   Devolve a árvore inteira: etapas > subetapas > atividades.
 ========================================================== */
 
 async function listarEstrutura(req, res) {
@@ -17,6 +27,12 @@ async function listarEstrutura(req, res) {
     const { obraId } = req.params;
 
     try {
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Obra não encontrada." });
+        }
 
         const etapasResult = await pool.query(
             "SELECT * FROM etapas WHERE obra_id = $1 ORDER BY order_index",
@@ -52,7 +68,6 @@ async function listarEstrutura(req, res) {
 
         }
 
-        // Monta a árvore juntando as 3 listas pelos IDs
         const etapas = etapasResult.rows.map((etapa) => ({
             ...etapa,
             subetapas: subetapasRows
@@ -87,6 +102,12 @@ async function criarEtapa(req, res) {
 
     try {
 
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Obra não encontrada." });
+        }
+
         const countResult = await pool.query(
             "SELECT COUNT(*) FROM etapas WHERE obra_id = $1",
             [obraId]
@@ -117,15 +138,28 @@ async function atualizarEtapa(req, res) {
 
     try {
 
-        const result = await pool.query(
-            `UPDATE etapas SET name = COALESCE($1, name), prazo_dias = $2
-             WHERE id = $3 RETURNING *`,
-            [name || null, prazoDias ?? null, id]
-        );
+        const atual = await pool.query("SELECT * FROM etapas WHERE id = $1", [id]);
 
-        if (result.rows.length === 0) {
+        if (atual.rows.length === 0) {
             return res.status(404).json({ error: "Etapa não encontrada." });
         }
+
+        const existente = atual.rows[0];
+
+        const pertence = await obraPertenceAoUsuario(existente.obra_id, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Etapa não encontrada." });
+        }
+
+        const result = await pool.query(
+            `UPDATE etapas SET name = $1, prazo_dias = $2 WHERE id = $3 RETURNING *`,
+            [
+                name !== undefined ? name : existente.name,
+                prazoDias !== undefined ? prazoDias : existente.prazo_dias,
+                id
+            ]
+        );
 
         res.json(result.rows[0]);
 
@@ -142,12 +176,19 @@ async function excluirEtapa(req, res) {
 
     try {
 
-        // ON DELETE CASCADE no banco já apaga subetapas e atividades juntas.
-        const result = await pool.query("DELETE FROM etapas WHERE id = $1 RETURNING id", [id]);
+        const atual = await pool.query("SELECT obra_id FROM etapas WHERE id = $1", [id]);
 
-        if (result.rows.length === 0) {
+        if (atual.rows.length === 0) {
             return res.status(404).json({ error: "Etapa não encontrada." });
         }
+
+        const pertence = await obraPertenceAoUsuario(atual.rows[0].obra_id, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Etapa não encontrada." });
+        }
+
+        await pool.query("DELETE FROM etapas WHERE id = $1", [id]);
 
         res.status(204).send();
 
@@ -172,6 +213,14 @@ async function criarSubetapa(req, res) {
     }
 
     try {
+
+        const obraId = await getObraIdDaEtapa(etapaId);
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Etapa não encontrada." });
+        }
 
         const countResult = await pool.query(
             "SELECT COUNT(*) FROM subetapas WHERE etapa_id = $1",
@@ -207,14 +256,18 @@ async function atualizarSubetapa(req, res) {
 
     try {
 
+        const obraId = await getObraIdDaSubetapa(id);
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Subetapa não encontrada." });
+        }
+
         const result = await pool.query(
             "UPDATE subetapas SET name = $1 WHERE id = $2 RETURNING *",
             [name, id]
         );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Subetapa não encontrada." });
-        }
 
         res.json(result.rows[0]);
 
@@ -231,11 +284,15 @@ async function excluirSubetapa(req, res) {
 
     try {
 
-        const result = await pool.query("DELETE FROM subetapas WHERE id = $1 RETURNING id", [id]);
+        const obraId = await getObraIdDaSubetapa(id);
 
-        if (result.rows.length === 0) {
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
             return res.status(404).json({ error: "Subetapa não encontrada." });
         }
+
+        await pool.query("DELETE FROM subetapas WHERE id = $1", [id]);
 
         res.status(204).send();
 
@@ -264,6 +321,14 @@ async function criarAtividade(req, res) {
     }
 
     try {
+
+        const obraId = await getObraIdDaSubetapa(subetapaId);
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Subetapa não encontrada." });
+        }
 
         const countResult = await pool.query(
             "SELECT COUNT(*) FROM atividades_catalogo WHERE subetapa_id = $1",
@@ -295,24 +360,42 @@ async function atualizarAtividade(req, res) {
 
     try {
 
-        const result = await pool.query(
-            `UPDATE atividades_catalogo
-             SET name = COALESCE($1, name),
-                 prazo_dias = $2,
-                 quantidade_total = $3,
-                 unidade = $4,
-                 finalizada = COALESCE($5, finalizada),
-                 finalizada_em = CASE WHEN $5 = TRUE THEN COALESCE(finalizada_em, CURRENT_DATE)
-                                      WHEN $5 = FALSE THEN NULL
-                                      ELSE finalizada_em END
-             WHERE id = $6
-             RETURNING *`,
-            [name || null, prazoDias ?? null, quantidadeTotal ?? null, unidade ?? null, finalizada ?? null, id]
-        );
+        const atual = await pool.query("SELECT * FROM atividades_catalogo WHERE id = $1", [id]);
 
-        if (result.rows.length === 0) {
+        if (atual.rows.length === 0) {
             return res.status(404).json({ error: "Atividade não encontrada." });
         }
+
+        const existente = atual.rows[0];
+
+        const obraId = await getObraIdDaSubetapa(existente.subetapa_id);
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Atividade não encontrada." });
+        }
+
+        const novoNome = name !== undefined ? name : existente.name;
+        const novoPrazo = prazoDias !== undefined ? prazoDias : existente.prazo_dias;
+        const novaQuantidade = quantidadeTotal !== undefined ? quantidadeTotal : existente.quantidade_total;
+        const novaUnidade = unidade !== undefined ? unidade : existente.unidade;
+        const novaFinalizada = finalizada !== undefined ? finalizada : existente.finalizada;
+
+        let novaFinalizadaEm = existente.finalizada_em;
+
+        if (finalizada !== undefined && finalizada !== existente.finalizada) {
+            novaFinalizadaEm = finalizada ? new Date() : null;
+        }
+
+        const result = await pool.query(
+            `UPDATE atividades_catalogo
+             SET name = $1, prazo_dias = $2, quantidade_total = $3, unidade = $4,
+                 finalizada = $5, finalizada_em = $6
+             WHERE id = $7
+             RETURNING *`,
+            [novoNome, novoPrazo, novaQuantidade, novaUnidade, novaFinalizada, novaFinalizadaEm, id]
+        );
 
         res.json(result.rows[0]);
 
@@ -329,14 +412,21 @@ async function excluirAtividade(req, res) {
 
     try {
 
-        const result = await pool.query(
-            "DELETE FROM atividades_catalogo WHERE id = $1 RETURNING id",
-            [id]
-        );
+        const atual = await pool.query("SELECT subetapa_id FROM atividades_catalogo WHERE id = $1", [id]);
 
-        if (result.rows.length === 0) {
+        if (atual.rows.length === 0) {
             return res.status(404).json({ error: "Atividade não encontrada." });
         }
+
+        const obraId = await getObraIdDaSubetapa(atual.rows[0].subetapa_id);
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Atividade não encontrada." });
+        }
+
+        await pool.query("DELETE FROM atividades_catalogo WHERE id = $1", [id]);
 
         res.status(204).send();
 

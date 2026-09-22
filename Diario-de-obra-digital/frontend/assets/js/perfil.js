@@ -5,24 +5,6 @@
 ========================================================== */
 
 /* ==========================================================
-   DADOS FICTÍCIOS (futuramente virão do backend)
-========================================================== */
-
-const userData = {
-    name: "Cauan Silva",
-    email: "cauan@exemplo.com",
-    phone: "(47) 99999-0000",
-    role: "Engenheiro Civil",
-    company: "Construtora Delta",
-    crea: "CREA/SC 123456",
-    memberSince: "MAR 2026",
-    stats: {
-        activeObras: 2,
-        totalRDOs: 37
-    }
-};
-
-/* ==========================================================
    INICIAIS DO NOME (para o "crachá")
 ========================================================== */
 
@@ -37,31 +19,50 @@ function getInitials(fullName) {
 
 }
 
+function formatMonthYear(isoDate) {
+
+    if (!isoDate) return "—";
+
+    const date = new Date(isoDate);
+
+    const months = [
+        "JAN", "FEV", "MAR", "ABR", "MAI", "JUN",
+        "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"
+    ];
+
+    return `${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+
+}
+
 /* ==========================================================
    RENDERIZAÇÃO
 ========================================================== */
 
-function renderProfile(user) {
+function renderProfile(user, obras) {
 
     document.getElementById("perfil-avatar").textContent = getInitials(user.name);
 
     document.getElementById("perfil-name").textContent = user.name;
-    document.getElementById("perfil-role").textContent = `${user.role} · ${user.company}`;
+
+    const cargoEmpresa = [user.role, user.company].filter(Boolean).join(" · ");
+    document.getElementById("perfil-role").textContent = cargoEmpresa || "—";
 
     document.getElementById("info-name").textContent = user.name;
     document.getElementById("info-email").textContent = user.email;
-    document.getElementById("info-phone").textContent = user.phone;
+    document.getElementById("info-phone").textContent = user.phone || "—";
 
-    document.getElementById("info-role").textContent = user.role;
-    document.getElementById("info-company").textContent = user.company;
-    document.getElementById("info-crea").textContent = user.crea;
+    document.getElementById("info-role").textContent = user.role || "—";
+    document.getElementById("info-company").textContent = user.company || "—";
 
-    document.getElementById("stat-active-obras").textContent =
-        String(user.stats.activeObras).padStart(2, "0");
+    document.getElementById("info-crea").textContent =
+        user.registration_type ? `${user.registration_type} ${user.registration_number || ""}`.trim() : "—";
 
-    document.getElementById("stat-total-rdos").textContent = user.stats.totalRDOs;
+    const activeObras = obras.filter((o) => o.status === "ativa").length;
+    const totalRDOs = obras.reduce((sum, o) => sum + Number(o.rdo_count || 0), 0);
 
-    document.getElementById("stat-member-since").textContent = user.memberSince;
+    document.getElementById("stat-active-obras").textContent = String(activeObras).padStart(2, "0");
+    document.getElementById("stat-total-rdos").textContent = totalRDOs;
+    document.getElementById("stat-member-since").textContent = formatMonthYear(user.created_at);
 
 }
 
@@ -87,13 +88,37 @@ function showToast(message) {
 }
 
 /* ==========================================================
+   CARREGAR DADOS DO BACKEND
+========================================================== */
+
+async function loadPerfil() {
+
+    try {
+
+        const [user, obras] = await Promise.all([
+            apiFetch("/usuarios/perfil"),
+            apiFetch("/obras")
+        ]);
+
+        // Mantém o localStorage sincronizado também, já que outras
+        // telas (como a saudação da Home) usam esse valor guardado.
+        setStoredUser(user);
+
+        renderProfile(user, obras);
+
+    } catch (error) {
+        showToast(`Erro ao carregar o perfil: ${error.message}`);
+    }
+
+}
+
+/* ==========================================================
    AÇÕES
 ========================================================== */
 
 function handleLogout() {
 
-    // Futuramente: encerrar a sessão de verdade no backend.
-    window.location.href = "login.html";
+    logout();
 
 }
 
@@ -103,7 +128,9 @@ function handleLogout() {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    renderProfile(userData);
+    requireLogin();
+
+    loadPerfil();
 
     document
         .getElementById("action-edit-profile")

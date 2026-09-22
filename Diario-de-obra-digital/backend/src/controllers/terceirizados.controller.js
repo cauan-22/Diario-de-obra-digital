@@ -6,17 +6,22 @@
 ========================================================== */
 
 const pool = require("../db");
-
-/* ==========================================================
-   GET /obras/:obraId/empresas
-   Devolve as empresas já com os funcionários dentro.
-========================================================== */
+const {
+    obraPertenceAoUsuario,
+    getObraIdDoFuncionarioTerceirizado
+} = require("../utils/obraOwnership");
 
 async function listar(req, res) {
 
     const { obraId } = req.params;
 
     try {
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Obra não encontrada." });
+        }
 
         const empresasResult = await pool.query(
             "SELECT * FROM empresas_terceirizadas WHERE obra_id = $1 ORDER BY name",
@@ -52,10 +57,6 @@ async function listar(req, res) {
 
 }
 
-/* ==========================================================
-   EMPRESAS
-========================================================== */
-
 async function criarEmpresa(req, res) {
 
     const { obraId } = req.params;
@@ -66,6 +67,12 @@ async function criarEmpresa(req, res) {
     }
 
     try {
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Obra não encontrada." });
+        }
 
         const result = await pool.query(
             `INSERT INTO empresas_terceirizadas (obra_id, name, especialidade)
@@ -90,17 +97,31 @@ async function atualizarEmpresa(req, res) {
 
     try {
 
-        const result = await pool.query(
-            `UPDATE empresas_terceirizadas
-             SET name = COALESCE($1, name), especialidade = $2
-             WHERE id = $3
-             RETURNING *`,
-            [name || null, especialidade ?? null, id]
-        );
+        const atual = await pool.query("SELECT * FROM empresas_terceirizadas WHERE id = $1", [id]);
 
-        if (result.rows.length === 0) {
+        if (atual.rows.length === 0) {
             return res.status(404).json({ error: "Empresa não encontrada." });
         }
+
+        const existente = atual.rows[0];
+
+        const pertence = await obraPertenceAoUsuario(existente.obra_id, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Empresa não encontrada." });
+        }
+
+        const result = await pool.query(
+            `UPDATE empresas_terceirizadas
+             SET name = $1, especialidade = $2
+             WHERE id = $3
+             RETURNING *`,
+            [
+                name !== undefined ? name : existente.name,
+                especialidade !== undefined ? especialidade : existente.especialidade,
+                id
+            ]
+        );
 
         res.json(result.rows[0]);
 
@@ -117,15 +138,19 @@ async function excluirEmpresa(req, res) {
 
     try {
 
-        // ON DELETE CASCADE no banco já apaga os funcionários junto.
-        const result = await pool.query(
-            "DELETE FROM empresas_terceirizadas WHERE id = $1 RETURNING id",
-            [id]
-        );
+        const atual = await pool.query("SELECT obra_id FROM empresas_terceirizadas WHERE id = $1", [id]);
 
-        if (result.rows.length === 0) {
+        if (atual.rows.length === 0) {
             return res.status(404).json({ error: "Empresa não encontrada." });
         }
+
+        const pertence = await obraPertenceAoUsuario(atual.rows[0].obra_id, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Empresa não encontrada." });
+        }
+
+        await pool.query("DELETE FROM empresas_terceirizadas WHERE id = $1", [id]);
 
         res.status(204).send();
 
@@ -135,10 +160,6 @@ async function excluirEmpresa(req, res) {
     }
 
 }
-
-/* ==========================================================
-   FUNCIONÁRIOS TERCEIRIZADOS
-========================================================== */
 
 async function criarFuncionario(req, res) {
 
@@ -150,6 +171,21 @@ async function criarFuncionario(req, res) {
     }
 
     try {
+
+        const empresaResult = await pool.query(
+            "SELECT obra_id FROM empresas_terceirizadas WHERE id = $1",
+            [empresaId]
+        );
+
+        if (empresaResult.rows.length === 0) {
+            return res.status(404).json({ error: "Empresa não encontrada." });
+        }
+
+        const pertence = await obraPertenceAoUsuario(empresaResult.rows[0].obra_id, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Empresa não encontrada." });
+        }
 
         const result = await pool.query(
             `INSERT INTO funcionarios_terceirizados (empresa_id, name, funcao)
@@ -174,19 +210,34 @@ async function atualizarFuncionario(req, res) {
 
     try {
 
-        const result = await pool.query(
-            `UPDATE funcionarios_terceirizados SET
-                name = COALESCE($1, name),
-                funcao = COALESCE($2, funcao),
-                status = COALESCE($3, status)
-             WHERE id = $4
-             RETURNING *`,
-            [name || null, funcao || null, status || null, id]
-        );
+        const atual = await pool.query("SELECT * FROM funcionarios_terceirizados WHERE id = $1", [id]);
 
-        if (result.rows.length === 0) {
+        if (atual.rows.length === 0) {
             return res.status(404).json({ error: "Funcionário não encontrado." });
         }
+
+        const existente = atual.rows[0];
+
+        const obraId = await getObraIdDoFuncionarioTerceirizado(id);
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Funcionário não encontrado." });
+        }
+
+        const result = await pool.query(
+            `UPDATE funcionarios_terceirizados SET
+                name = $1, funcao = $2, status = $3
+             WHERE id = $4
+             RETURNING *`,
+            [
+                name !== undefined ? name : existente.name,
+                funcao !== undefined ? funcao : existente.funcao,
+                status !== undefined ? status : existente.status,
+                id
+            ]
+        );
 
         res.json(result.rows[0]);
 
@@ -203,14 +254,19 @@ async function excluirFuncionario(req, res) {
 
     try {
 
-        const result = await pool.query(
-            "DELETE FROM funcionarios_terceirizados WHERE id = $1 RETURNING id",
-            [id]
-        );
+        const obraId = await getObraIdDoFuncionarioTerceirizado(id);
 
-        if (result.rows.length === 0) {
+        if (!obraId) {
             return res.status(404).json({ error: "Funcionário não encontrado." });
         }
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "Funcionário não encontrado." });
+        }
+
+        await pool.query("DELETE FROM funcionarios_terceirizados WHERE id = $1", [id]);
 
         res.status(204).send();
 
