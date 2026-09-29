@@ -7,23 +7,14 @@
 
 const pool = require("../db");
 const PDFDocument = require("pdfkit");
-const { obraPertenceAoUsuario } = require("../utils/obraOwnership");
-
-/* Conta o total de "pessoas" numa lista de descrições manuais,
-   igual à lógica que já existe no frontend (ex: "02 Pedreiros" -> 2). */
+const { obraPertenceAoUsuario, getObraIdDoRDO } = require("../utils/obraOwnership");
 
 function countManualWorkers(descriptions) {
-
     return descriptions.reduce((total, text) => {
         const match = text.match(/^(\d+)/);
         return total + (match ? Number(match[1]) : 1);
     }, 0);
-
 }
-
-/* ==========================================================
-   GET /obras/:obraId/rdos/next-number
-========================================================== */
 
 async function getNextRdoNumber(req, res) {
 
@@ -50,10 +41,6 @@ async function getNextRdoNumber(req, res) {
     }
 
 }
-
-/* ==========================================================
-   GET /obras/:obraId/rdos — lista resumida (histórico da obra)
-========================================================== */
 
 async function listar(req, res) {
 
@@ -119,15 +106,11 @@ async function listar(req, res) {
 
 }
 
-/* ==========================================================
-   Busca um RDO completo, com todas as tabelas relacionadas
-   já juntadas. Reaproveitado por buscarPorId() e gerarPDF().
-========================================================== */
-
 async function buscarRDOCompleto(id) {
 
     const rdoResult = await pool.query(
-        `SELECT rdos.*, obras.name AS obra_name, obras.city, obras.state
+        `SELECT rdos.*, obras.name AS obra_name, obras.city, obras.state,
+                obras.responsible, obras.registration_type, obras.registration_number
          FROM rdos
          JOIN obras ON obras.id = rdos.obra_id
          WHERE rdos.id = $1`,
@@ -140,10 +123,7 @@ async function buscarRDOCompleto(id) {
 
     const [activities, workersOwn, workersOut, equipment, materials, photos] = await Promise.all([
 
-        pool.query(
-            "SELECT * FROM rdo_activities WHERE rdo_id = $1 ORDER BY order_index",
-            [id]
-        ),
+        pool.query("SELECT * FROM rdo_activities WHERE rdo_id = $1 ORDER BY order_index", [id]),
 
         pool.query(
             `SELECT rdo_workers_own.*, funcionarios.name AS funcionario_name, funcionarios.funcao
@@ -188,15 +168,19 @@ async function buscarRDOCompleto(id) {
 
 }
 
-/* ==========================================================
-   GET /rdos/:id
-========================================================== */
-
 async function buscarPorId(req, res) {
 
     const { id } = req.params;
 
     try {
+
+        const obraId = await getObraIdDoRDO(id);
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "RDO não encontrado." });
+        }
 
         const rdo = await buscarRDOCompleto(id);
 
@@ -212,11 +196,6 @@ async function buscarPorId(req, res) {
     }
 
 }
-
-/* ==========================================================
-   Insere todas as "tabelas filhas" de um RDO (usado tanto na
-   criação quanto na edição, pra não duplicar esse bloco).
-========================================================== */
 
 async function inserirDadosRelacionados(client, rdoId, dados) {
 
@@ -245,60 +224,41 @@ async function inserirDadosRelacionados(client, rdoId, dados) {
     }
 
     for (const worker of workersOwn) {
-
         await client.query(
-            `INSERT INTO rdo_workers_own (rdo_id, funcionario_id, manual_description)
-             VALUES ($1, $2, $3)`,
+            `INSERT INTO rdo_workers_own (rdo_id, funcionario_id, manual_description) VALUES ($1, $2, $3)`,
             [rdoId, worker.funcionarioId || null, worker.manualDescription || null]
         );
-
     }
 
     for (const worker of workersOutsourced) {
-
         await client.query(
-            `INSERT INTO rdo_workers_outsourced (rdo_id, funcionario_terceirizado_id, manual_description)
-             VALUES ($1, $2, $3)`,
+            `INSERT INTO rdo_workers_outsourced (rdo_id, funcionario_terceirizado_id, manual_description) VALUES ($1, $2, $3)`,
             [rdoId, worker.funcionarioTerceirizadoId || null, worker.manualDescription || null]
         );
-
     }
 
     for (const item of equipment) {
-
         await client.query(
-            `INSERT INTO rdo_equipment (rdo_id, equipment_id, manual_description, status_dia)
-             VALUES ($1, $2, $3, $4)`,
+            `INSERT INTO rdo_equipment (rdo_id, equipment_id, manual_description, status_dia) VALUES ($1, $2, $3, $4)`,
             [rdoId, item.equipmentId || null, item.manualDescription || null, item.statusDia]
         );
-
     }
 
     for (const material of materials) {
-
         await client.query(
-            `INSERT INTO rdo_materials (rdo_id, name, fornecedor, nota_fiscal, quantidade)
-             VALUES ($1, $2, $3, $4, $5)`,
+            `INSERT INTO rdo_materials (rdo_id, name, fornecedor, nota_fiscal, quantidade) VALUES ($1, $2, $3, $4, $5)`,
             [rdoId, material.name, material.fornecedor || null, material.notaFiscal || null, material.quantidade || null]
         );
-
     }
 
     for (const photo of photos) {
-
         await client.query(
-            `INSERT INTO rdo_photos (rdo_id, url, description)
-             VALUES ($1, $2, $3)`,
+            `INSERT INTO rdo_photos (rdo_id, url, description) VALUES ($1, $2, $3)`,
             [rdoId, photo.url, photo.description || null]
         );
-
     }
 
 }
-
-/* ==========================================================
-   POST /obras/:obraId/rdos (precisa estar logado)
-========================================================== */
 
 async function criar(req, res) {
 
@@ -373,13 +333,17 @@ async function criar(req, res) {
 
 }
 
-/* ==========================================================
-   PUT /rdos/:id (precisa estar logado)
-========================================================== */
-
 async function atualizar(req, res) {
 
     const { id } = req.params;
+
+    const obraIdDoRdo = await getObraIdDoRDO(id);
+
+    const pertence = await obraPertenceAoUsuario(obraIdDoRdo, req.userId);
+
+    if (!pertence) {
+        return res.status(404).json({ error: "RDO não encontrado." });
+    }
 
     const {
         date, weekday, weatherManha, weatherTarde, weatherImpact,
@@ -442,15 +406,19 @@ async function atualizar(req, res) {
 
 }
 
-/* ==========================================================
-   GET /rdos/:id/pdf
-========================================================== */
-
 async function gerarPDF(req, res) {
 
     const { id } = req.params;
 
     try {
+
+        const obraId = await getObraIdDoRDO(id);
+
+        const pertence = await obraPertenceAoUsuario(obraId, req.userId);
+
+        if (!pertence) {
+            return res.status(404).json({ error: "RDO não encontrado." });
+        }
 
         const rdo = await buscarRDOCompleto(id);
 
@@ -470,8 +438,7 @@ async function gerarPDF(req, res) {
         doc.rect(0, 0, doc.page.width, 8).fill("#F4B400");
         doc.moveDown(2);
 
-        doc.fillColor("#1F1F1F").fontSize(20).font("Helvetica-Bold")
-            .text(`RDO No ${numeroFormatado}`);
+        doc.fillColor("#1F1F1F").fontSize(20).font("Helvetica-Bold").text(`RDO No ${numeroFormatado}`);
 
         doc.fontSize(12).font("Helvetica").fillColor("#6B6B6B")
             .text(`${rdo.obra_name} - ${rdo.city} / ${rdo.state}`)
@@ -565,8 +532,7 @@ async function gerarPDF(req, res) {
         doc.text(rdo.observations || "-");
 
         doc.moveDown(2);
-        doc.fontSize(9).fillColor("#999999")
-            .text(`Gerado pelo BuildTrack em ${new Date().toLocaleString("pt-BR")}`);
+        doc.fontSize(9).fillColor("#999999").text(`Gerado pelo BuildTrack em ${new Date().toLocaleString("pt-BR")}`);
 
         doc.end();
 
@@ -577,11 +543,4 @@ async function gerarPDF(req, res) {
 
 }
 
-module.exports = {
-    getNextRdoNumber,
-    listar,
-    buscarPorId,
-    criar,
-    atualizar,
-    gerarPDF
-};
+module.exports = { getNextRdoNumber, listar, buscarPorId, criar, atualizar, gerarPDF };

@@ -52,6 +52,11 @@ async function getObraIdDoFuncionarioTerceirizado(funcionarioId) {
     return result.rows[0]?.obra_id ?? null;
 }
 
+async function getObraIdDoRDO(rdoId) {
+    const result = await pool.query("SELECT obra_id FROM rdos WHERE id = $1", [rdoId]);
+    return result.rows[0]?.obra_id ?? null;
+}
+
 /* Confere se a obra pertence mesmo ao usuário logado. */
 
 async function obraPertenceAoUsuario(obraId, userId) {
@@ -72,5 +77,6 @@ module.exports = {
     getObraIdDaSubetapa,
     getObraIdDaAtividade,
     getObraIdDoFuncionarioTerceirizado,
+    getObraIdDoRDO,
     obraPertenceAoUsuario
 };
